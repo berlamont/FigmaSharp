@@ -35,6 +35,7 @@ using System.Threading;
 using FigmaSharp.Models;
 using FigmaSharp.Converters;
 using System.IO;
+using LiteForms;
 
 namespace FigmaSharp.Services
 {
@@ -86,10 +87,10 @@ namespace FigmaSharp.Services
                             throw new FileNotFoundException(filePath);
                         }
                       
-                        if (vector.View is IImageViewWrapper imageView)
+                        if (vector.View is IImageView imageView)
                         {
                             var image = AppContext.Current.GetImageFromFilePath(filePath);
-                            imageView.SetImage(image);
+                            imageView.Image = image;
                         }
                     }
                     catch (FileNotFoundException ex)
@@ -185,17 +186,17 @@ namespace FigmaSharp.Services
                     //with all the keys now we get the dupplicated images
                     foreach (var imageUrl in imageCacheResponse)
                     {
-                        var imageWrapper = AppContext.Current.GetImage(imageUrl.Item1);
+                        var Image = AppContext.Current.GetImage(imageUrl.Item1);
                         foreach (var figmaNodeId in imageUrl.Item2)
                         {
                             var vector = imageFigmaNodes.FirstOrDefault(s => s.FigmaNode.id == figmaNodeId);
                             Console.Write("[{0}:{1}:{2}] {3}...", vector.FigmaNode.GetType(), vector.FigmaNode.id, vector.FigmaNode.name, imageUrl);
 
-                            if (vector != null && vector.View is IImageViewWrapper imageView)
+                            if (vector != null && vector.View is IImageView imageView)
                             {
                                 AppContext.Current.BeginInvoke(() =>
                                 {
-                                    imageView.SetImage(imageWrapper);
+									imageView.Image = Image;
                                 });
                             }
                             Console.Write("OK \n");
@@ -237,9 +238,9 @@ namespace FigmaSharp.Services
                 {
                     var recoveredKey = FigmaResourceConverter.FromResource(vector.FigmaNode.id);
                     var image = AppContext.Current.GetImageFromManifest(Assembly, recoveredKey);
-                    if (image != null && vector.View is IImageViewWrapper imageView)
+                    if (image != null && vector.View is IImageView imageView)
                     {
-                        imageView.SetImage(image);
+                        imageView.Image = image;
                     }
                 }
             }

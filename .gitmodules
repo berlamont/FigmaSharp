@@ -1,3 +1,6 @@
 [submodule "external/Xamarin.PropertyEditing"]
 	path = external/Xamarin.PropertyEditing
 	url = https://github.com/xamarin/Xamarin.PropertyEditing
+[submodule "external/LiteForms"]
+	path = external/LiteForms
+	url = https://github.com/netonjm/LiteForms

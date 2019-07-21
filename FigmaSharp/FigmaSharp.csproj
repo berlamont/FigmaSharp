@@ -26,6 +26,6 @@
     <Compile Remove="Services\ViewContentRendererService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FigmaSharp.Tools\xForms\xForms\xForms.csproj" />
+    <ProjectReference Include="..\external\LiteForms\LiteForms\LiteForms.csproj" />
   </ItemGroup>
 </Project>
