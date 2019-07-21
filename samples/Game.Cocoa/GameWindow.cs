@@ -7,121 +7,127 @@ using FigmaSharp.Cocoa;
 using System.Collections.Generic;
 using System.Linq;
 using Foundation;
+using LiteForms;
+using LiteForms.Cocoa;
 
 namespace Game.Cocoa
 {
-    public class GameWindow : NSWindow
+    public class GameWindow : Window
     {
         const int WalkModifier = 13;
       
-        NSImageView[] spikesTiles;
-        NSImageView[] wallTiles;
+        ImageView[] spikesTiles;
+		ImageView[] wallTiles;
 
-        List<NSImageView> gemsTiles;
-        List<NSImageView> heartTiles;
-        NSTextField pointsLabel;
-        NSView playerTile;
+        List<ImageView> gemsTiles;
+        List<ImageView> heartTiles;
+        Label pointsLabel;
+		ImageView playerTile;
         int points = 0;
 
-        #region Player Movement
+		//    #region Player Movement
 
-        public override void KeyDown(NSEvent theEvent)
-        {
-            if (theEvent.KeyCode == (ushort)NSKey.LeftArrow)
-            {
-                MovePlayer(new CGPoint(playerTile.Frame.X - WalkModifier, playerTile.Frame.Y));
-                return;
-            }
+		//    public override void KeyDown(NSEvent theEvent)
+		//    {
+		//        if (theEvent.KeyCode == (ushort)NSKey.LeftArrow)
+		//        {
+		//var frame = playerTile.Allocation;
+		//MovePlayer(new CGPoint(frame.X - WalkModifier, frame.Y));
+		//            return;
+		//        }
 
-            if (theEvent.KeyCode == (ushort)NSKey.RightArrow)
-            {
-                MovePlayer(new CGPoint(playerTile.Frame.X + WalkModifier, playerTile.Frame.Y));
-                return;
-            }
+		//        if (theEvent.KeyCode == (ushort)NSKey.RightArrow)
+		//        {
+		//var frame = playerTile.Allocation;
+		//MovePlayer(new CGPoint(frame.X + WalkModifier, frame.Y));
+		//            return;
+		//        }
 
-            if (theEvent.KeyCode == (ushort)NSKey.UpArrow)
-            {
-                MovePlayer(new CGPoint(playerTile.Frame.X, playerTile.Frame.Y + WalkModifier));
-                return;
-            }
+		//        if (theEvent.KeyCode == (ushort)NSKey.UpArrow)
+		//        {
+		//var frame = playerTile.Allocation;
+		//MovePlayer(new CGPoint(frame.X, frame.Y + WalkModifier));
+		//            return;
+		//        }
 
-            if (theEvent.KeyCode == (ushort)NSKey.DownArrow)
-            {
-                MovePlayer(new CGPoint(playerTile.Frame.X, playerTile.Frame.Y - WalkModifier));
-                return;
-            }
+		//        if (theEvent.KeyCode == (ushort)NSKey.DownArrow)
+		//        {
+		//var frame = playerTile.Allocation;
+		//MovePlayer(new CGPoint(frame.X, frame.Y - WalkModifier));
+		//            return;
+		//        }
 
-            base.KeyDown(theEvent);
-        }
+		//        base.KeyDown(theEvent);
+		//    }
 
-        #endregion
+		//    #endregion
 
-        void MovePlayer (CGPoint point)
-        {
-            if (PlayerPositionCollidesWithWall (point))
-                return;
-            playerTile.SetFrameOrigin(point);
+		//void MovePlayer (CGPoint point)
+		//{
+		//    if (PlayerPositionCollidesWithWall (point))
+		//        return;
+		//    playerTile.SetPosition (point.X, point.Y);
 
-            Refresh();
-        }
+		//    Refresh();
+		//}
 
-        bool PlayerPositionCollidesWithWall (CGPoint point)
-        {
-            var playerPosition = new CGRect(point, playerTile.Frame.Size);
-            foreach (var gem in wallTiles)
-            {
-                if (gem.Frame.IntersectsWith(playerPosition))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+		//bool PlayerPositionCollidesWithWall (CGPoint point)
+		//{
+		//    var playerPosition = new CGRect(point, playerTile.Frame.Size);
+		//    foreach (var gem in wallTiles)
+		//    {
+		//        if (gem.Frame.IntersectsWith(playerPosition))
+		//        {
+		//            return true;
+		//        }
+		//    }
+		//    return false;
+		//}
 
-        void Refresh ()
-        {
-            //if user is in a 
-            foreach (var spike in spikesTiles)
-            {
-                if (spike.Frame.IntersectsWith(playerTile.Frame))
-                {
-                    PlayerDied();
-                    return;
-                }
-            }
+		//void Refresh ()
+		//{
+		//    //if user is in a 
+		//    foreach (var spike in spikesTiles)
+		//    {
+		//        if (spike.Frame.IntersectsWith(playerTile.Frame))
+		//        {
+		//            PlayerDied();
+		//            return;
+		//        }
+		//    }
 
-            foreach (var gem in gemsTiles)
-            {
-                if (gem.Frame.IntersectsWith (playerTile.Frame))
-                {
-                    gemsTiles.Remove(gem);
-                    gem.RemoveFromSuperview();
-                    points++;
-                    coinSound.Play();
-                    break;
-                }
-            }
-            pointsLabel.StringValue = points.ToString ();
-        }
+		//    foreach (var gem in gemsTiles)
+		//    {
+		//        if (gem.Allocation.IntersectsWith (playerTile.Allocation))
+		//        {
+		//            gemsTiles.Remove(gem);
+		//            gem.RemoveFromParent ();
+		//            points++;
+		//            coinSound.Play();
+		//            break;
+		//        }
+		//    }
+		//    pointsLabel.Text StringValue = points.ToString ();
+		//}
 
-        void PlayerDied ()
-        {
-            playerTile.SetFrameOrigin(startingPoint);
-            var lastLive = heartTiles.FirstOrDefault();
-            if (lastLive != null)
-            {
-                heartTiles.Remove(lastLive);
-                lastLive.RemoveFromSuperview();
-            }
-            gameOverSound.Play();
-        }
+		void PlayerDied()
+		{
+			//playerTile.SetFrameOrigin(startingPoint);
+			//var lastLive = heartTiles.FirstOrDefault();
+			//if (lastLive != null)
+			//{
+			//	heartTiles.Remove(lastLive);
+			//	lastLive.RemoveFromSuperview();
+			//}
+			//gameOverSound.Play();
+		}
 
-        CGPoint startingPoint;
+		Point startingPoint;
         AVFoundation.AVAudioPlayer backgroundMusic;
         AVFoundation.AVAudioPlayer coinSound;
         AVFoundation.AVAudioPlayer gameOverSound;
 
-        public GameWindow(CGRect rect) : base(rect, NSWindowStyle.Titled | NSWindowStyle.Closable, NSBackingStore.Buffered, false)
+        public GameWindow(Rectangle rect) : base(rect)
         {
             //we get the default basic view converters from the current loaded toolkit
             var converters = FigmaSharp.AppContext.Current.GetFigmaConverters();
@@ -131,7 +137,7 @@ namespace Game.Cocoa
             fileProvider.Load("Jv8kwhoRsrmtJDsSHcTgWGYu");
 
             //we initialize our renderer service, this uses all the converters passed
-            //and generate a collection of NodesProcessed which is basically contains <FigmaModel, IViewWrapper, FigmaParentModel>
+            //and generate a collection of NodesProcessed which is basically contains <FigmaModel, IView, FigmaParentModel>
             var rendererService = new FigmaViewRendererService(fileProvider, converters);
 
             //play background music
@@ -147,30 +153,29 @@ namespace Game.Cocoa
             coinSound = AVFoundation.AVAudioPlayer.FromUrl(coinMusicPath, out error);
 
             //we want load the entire level 1
-            IViewWrapper view = rendererService.RenderByName<IViewWrapper>("Level1");
+            IView view = rendererService.FindViewByName <IView>("Level1");
+			Content = view;
 
-            ContentView = view.NativeObject as NSView;
+            playerTile = rendererService.FindViewByName<ImageView>("Player");
 
-            playerTile = rendererService.FindNativeViewByName<NSImageView>("Player");
+            startingPoint = playerTile.Allocation.Origin;
 
-            startingPoint = playerTile.Frame.Location;
+            pointsLabel = rendererService.FindViewByName<Label>("Points");
 
-            pointsLabel = rendererService.FindNativeViewByName<NSTextField>("Points");
-
-            gemsTiles = rendererService.FindNativeViewsByName<NSImageView>("Gem")
+            gemsTiles = rendererService.FindViewsByName<ImageView>("Gem")
                 .ToList ();
 
-            wallTiles = rendererService.FindNativeViewsStartsWith<NSImageView>("Tile")
+            wallTiles = rendererService.FindViewsByName<ImageView>("Tile")
                 .ToArray();
 
-            spikesTiles = rendererService.FindNativeViewsStartsWith<NSImageView>("Spikes")
-                .ToArray();
+            //spikesTiles = rendererService.FindViewByName<ImageView>("Spikes")
+            //    .ToArray();
 
-            heartTiles = rendererService.FindNativeViewsStartsWith<NSImageView>("Heart")
-                .OrderBy(s => s.Frame.X)
-                .ToList();
+            //heartTiles = rendererService.FindViewByName<ImageView>("Heart")
+            //    .OrderBy(s => s.Frame.X)
+            //    .ToList();
 
-            Refresh();
+            //Refresh();
         }
     }
 }

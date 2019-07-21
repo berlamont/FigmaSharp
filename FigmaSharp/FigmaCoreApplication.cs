@@ -28,7 +28,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-
+using LiteForms;
 using FigmaSharp.Models;
 
 namespace FigmaSharp
@@ -69,13 +69,13 @@ namespace FigmaSharp
 
         public void BeginInvoke(Action handler) => figmaDelegate.BeginInvoke(handler);
 
-        public IViewWrapper CreateEmptyView() => figmaDelegate.CreateEmptyView();
+        public IView CreateEmptyView() => figmaDelegate.CreateEmptyView();
 
         public FigmaViewConverter[] GetFigmaConverters() => figmaDelegate.GetFigmaConverters();
 
-        public IImageWrapper GetImage(string url) => figmaDelegate.GetImage(url);
+        public IImage GetImage(string url) => figmaDelegate.GetImage(url);
 
-        public IImageWrapper GetImageFromFilePath(string filePath) =>
+        public IImage GetImageFromFilePath(string filePath) =>
             figmaDelegate.GetImageFromFilePath(filePath);
 
         public FigmaResponse GetFigmaResponseFromContent(string template) =>
@@ -84,7 +84,7 @@ namespace FigmaSharp
         public void SetFigmaResponseFromContent(FigmaResponse figmaResponse, string filePath) =>
              FigmaApiHelper.SetFigmaResponseFromContent(figmaResponse, filePath);
 
-        public IImageWrapper GetImageFromManifest(Assembly assembly, string imageRef) =>
+        public IImage GetImageFromManifest(Assembly assembly, string imageRef) =>
             figmaDelegate.GetImageFromManifest(assembly, imageRef);
 
         public string GetFigmaFileContent(string file, string token) =>
@@ -93,7 +93,7 @@ namespace FigmaSharp
         public string GetManifestResource(Assembly assembly, string file) =>
             figmaDelegate.GetManifestResource(assembly, file);
 
-        public IImageViewWrapper GetImageView(IImageWrapper image)
+        public IImageView GetImageView(IImage image)
         {
             return figmaDelegate.GetImageView(image);
         }

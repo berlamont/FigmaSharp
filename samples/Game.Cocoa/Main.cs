@@ -16,12 +16,12 @@ namespace Game.Cocoa
             NSApplication.Init();
             NSApplication.SharedApplication.ActivationPolicy = NSApplicationActivationPolicy.Regular;
 
-            var mainWindow = new GameWindow(new CGRect(0, 0, 720, 450));
+            var mainWindow = new GameWindow(new LiteForms.Rectangle(0, 0, 720, 450));
 
-            mainWindow.WillClose += delegate { NSRunningApplication.CurrentApplication.Terminate(); };
-            mainWindow.Center();
+            mainWindow.Closing += delegate { NSRunningApplication.CurrentApplication.Terminate(); };
+			//mainWindow.Center();
 
-            mainWindow.MakeKeyAndOrderFront(null);
+			mainWindow.Show();
 
             NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
             NSApplication.SharedApplication.Run();
