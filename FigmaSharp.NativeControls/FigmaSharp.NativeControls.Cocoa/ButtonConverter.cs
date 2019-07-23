@@ -43,7 +43,8 @@ namespace FigmaSharp.NativeControls.Cocoa
         {
             var figmaInstance = (FigmaInstance)currentNode;
 
-            var view = new NSButton();
+			var button = new Button();
+			var view = (NSButton)button.NativeObject;
 			view.Title = "";
             view.BezelStyle = NSBezelStyle.Rounded;
 
@@ -75,15 +76,13 @@ namespace FigmaSharp.NativeControls.Cocoa
                     .OfType<FigmaText>()
                     .FirstOrDefault();
 
-                if (label != null)
-                {
-                    view.Title = label.characters;
+                if (label != null) {
+					button.Text = label.characters;
                     view.Font = label.style.ToNSFont();
                 }
 
-                if (group.name == "Disabled")
-                {
-                    view.Enabled = false;
+                if (group.name == "Disabled") {
+					button.Enabled = false;
                 }
             }
 
@@ -91,7 +90,7 @@ namespace FigmaSharp.NativeControls.Cocoa
             {
                 view.Appearance = NSAppearance.GetAppearance(NSAppearance.NameDarkAqua);
             }
-            return new View(view);
+            return button;
         }
 
         public override string ConvertToCode(FigmaNode currentNode)

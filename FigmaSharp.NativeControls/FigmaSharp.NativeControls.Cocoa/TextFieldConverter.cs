@@ -42,7 +42,8 @@ namespace FigmaSharp.NativeControls.Cocoa
         {
             var instance = (FigmaInstance)currentNode;
 
-            var view = new NSTextField();
+			var textBox = new TextBox();
+			var view = (NSTextField)textBox.NativeObject;
 
             var figmaInstance = (FigmaInstance)currentNode;
             var controlType = figmaInstance.ToControlType();
@@ -64,7 +65,7 @@ namespace FigmaSharp.NativeControls.Cocoa
             var text = texts.FirstOrDefault (s => s.name == "lbl");
             if (text != null)
             {
-                view.StringValue = text.characters;
+				textBox.Text = text.characters;
                 view.Configure(text);
             }
 
@@ -78,7 +79,7 @@ namespace FigmaSharp.NativeControls.Cocoa
                 view.Appearance = NSAppearance.GetAppearance(NSAppearance.NameDarkAqua);
             }
 
-            return new View(view);
+            return textBox;
         }
 
         public override string ConvertToCode(FigmaNode currentNode)

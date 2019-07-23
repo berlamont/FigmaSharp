@@ -39,7 +39,7 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var currengroupView = new NSImageView();
+            var currengroupView = new FNSImageView();
             var figmaFrameEntity = (FigmaFrameEntity)currentNode;
             currengroupView.Configure(figmaFrameEntity);
             return new ImageView(currengroupView);

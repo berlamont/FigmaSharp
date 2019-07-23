@@ -47,10 +47,9 @@ namespace FigmaSharp.NativeControls.Cocoa
         {
             var figmaInstance = (FigmaInstance)currentNode;
 
-            var view = new NSButton();
-            view.Title = "";
+			var button = new RadioBox() { Text = "" };
+			var view = (NSButton)button.NativeObject;
             //view.BezelStyle = NSBezelStyle.Rounded;
-            view.SetButtonType(NSButtonType.Radio);
 
             var controlType = figmaInstance.ToControlType();
             switch (controlType)
@@ -73,9 +72,8 @@ namespace FigmaSharp.NativeControls.Cocoa
                   .OfType<FigmaText>()
                   .FirstOrDefault();
 
-            if (label != null)
-            {
-                view.Title = label.characters;
+            if (label != null) {
+				button.Text = label.characters;
                 view.Font = label.style.ToNSFont();
             }
 
@@ -86,11 +84,9 @@ namespace FigmaSharp.NativeControls.Cocoa
 
             if (group != null)
             {
-              
-
                 if (group.name == "Disabled")
                 {
-                    view.Enabled = false;
+					button.Enabled = false;
                 }
             }
 

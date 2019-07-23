@@ -47,10 +47,8 @@ namespace FigmaSharp.NativeControls.Cocoa
         {
             var figmaInstance = (FigmaInstance)currentNode;
 
-            var view = new NSButton();
-            view.Title = "";
-            //view.BezelStyle = NSBezelStyle.Rounded;
-            view.SetButtonType(NSButtonType.Switch);
+			var button = new CheckBox() { Text = "" };
+			var view = (NSButton)button.NativeObject;
 
             var controlType = figmaInstance.ToControlType();
             switch (controlType)
@@ -73,9 +71,8 @@ namespace FigmaSharp.NativeControls.Cocoa
                   .OfType<FigmaText>()
                   .FirstOrDefault();
 
-            if (label != null)
-            {
-                view.Title = label.characters;
+            if (label != null) {
+				button.Text = label.characters;
                 view.Font = label.style.ToNSFont();
             }
 
@@ -84,16 +81,17 @@ namespace FigmaSharp.NativeControls.Cocoa
                 .OfType<FigmaGroup>()
                 .FirstOrDefault(s => s.visible);
 
-            if (group != null)
-            {
-                if (group.name == "On")
-                {
-                    view.State = NSCellStateValue.On;
+            if (group != null) {
+                if (group.name == "On") {
+					button.IsChecked = true;
                 }
-            }
 
-            if (controlType.ToString().EndsWith("Dark", StringComparison.Ordinal))
-            {
+				if (group.name == "Disabled") {
+					button.Enabled = false;
+				}
+			}
+
+            if (controlType.ToString().EndsWith("Dark", StringComparison.Ordinal)) {
                 view.Appearance = NSAppearance.GetAppearance(NSAppearance.NameDarkAqua);
             }
 

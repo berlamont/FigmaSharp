@@ -39,7 +39,7 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var figmaLineView = new NSImageView();
+            var figmaLineView = new FNSImageView();
             var figmaLine = (FigmaLine)currentNode;
             figmaLineView.Configure(figmaLine);
             return new ImageView(figmaLineView);
