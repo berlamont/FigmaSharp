@@ -38,7 +38,7 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var currengroupView = new NSImageView();
+            var currengroupView = new FNSImageView();
             currengroupView.Configure((FigmaRegularPolygon)currentNode);
             return new ImageView(currengroupView);
         }

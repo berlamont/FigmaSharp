@@ -30,13 +30,12 @@ using AppKit;
 using CoreGraphics;
 using FigmaSharp;
 using FigmaSharp.Cocoa;
-using LocalFile.Shared;
 using LiteForms;
 using LiteForms.Cocoa;
+using LocalFile.Shared;
 
 namespace LocalFile.Cocoa
 {
-
 	static class MainClass
     {
         static IScrollView scrollView;
@@ -63,25 +62,25 @@ namespace LocalFile.Cocoa
             exampleViewManager = new ExampleViewManager(scrollView, figmaConverters);
 
             var rendererService = exampleViewManager.RendererService;
-            var urlTextField = rendererService.FindNativeViewByName<NSTextField>("FigmaUrlTextField");
-            var bundleButton = rendererService.FindNativeViewByName<NSButton>("BundleButton");
-            var cancelButton = rendererService.FindNativeViewByName<NSButton>("CancelButton");
+            var urlTextField = rendererService.FindViewByName<TextBox>("FigmaUrlTextField");
+            var bundleButton = rendererService.FindViewByName<Button>("BundleButton");
+            var cancelButton = rendererService.FindViewByName<Button>("CancelButton");
 
             if (cancelButton != null)
             {
-                cancelButton.Activated += (s, e) =>
+                cancelButton.Clicked += (s, e) =>
                 {
                     if (urlTextField != null)
-                        urlTextField.StringValue = "You pressed cancel";
+                        urlTextField.Text = "You pressed cancel";
                 };
             }
 
             if (bundleButton != null)
             {
-                bundleButton.Activated += (s, e) =>
+                bundleButton.Clicked += (s, e) =>
                 {
                     if (urlTextField != null)
-                        urlTextField.StringValue = "You pressed bundle";
+                        urlTextField.Text = "You pressed bundle";
                 };
             }
 

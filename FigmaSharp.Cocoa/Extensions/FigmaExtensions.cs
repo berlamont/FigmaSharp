@@ -99,7 +99,7 @@ namespace FigmaSharp.Cocoa
             var label = new NSTextField()
             {
                 StringValue = text ?? "",
-                Font = font ?? GetSystemFont(false),
+                Font = font ?? LiteForms.Cocoa.ViewsHelper. GetSystemFont(false),
                 Editable = false,
                 Bordered = false,
                 Bezeled = false,
@@ -216,7 +216,7 @@ namespace FigmaSharp.Cocoa
 
             var fontDefault = NSFont.SystemFontOfSize(style.fontSize, GetFontWeight(style));
             var traits = NSFontManager.SharedFontManager.TraitsOfFont(fontDefault);
-            var weight = Math.Max (ToAppKitFontWeight(style.fontWeight) - 2,1);
+            var weight = Math.Max (LiteForms.Cocoa.ViewsHelper. ToAppKitFontWeight(style.fontWeight) - 2,1);
 
             NSFont font = null;
             try

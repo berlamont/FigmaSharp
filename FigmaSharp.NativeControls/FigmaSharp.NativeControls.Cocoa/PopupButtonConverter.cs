@@ -40,9 +40,11 @@ namespace FigmaSharp.NativeControls.Cocoa
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var view = new NSPopUpButton();
+			var figmaInstance = (FigmaInstance)currentNode;
 
-            var figmaInstance = (FigmaInstance)currentNode;
+			var button = new ComboBox();
+			var view = (NSPopUpButton)button.NativeObject;
+		
             var controlType = figmaInstance.ToControlType();
             switch (controlType)
             {
@@ -60,18 +62,16 @@ namespace FigmaSharp.NativeControls.Cocoa
                    .OfType<FigmaText>()
                    .FirstOrDefault(s => s.name == "lbl");
 
-            if (label != null)
-            {
-                view.AddItem(label.characters);
+            if (label != null) {
+				button.AddItem(label.characters);
                 view.Font = label.style.ToNSFont();
             }
 
-            if (controlType.ToString().EndsWith("Dark", StringComparison.Ordinal))
-            {
+            if (controlType.ToString().EndsWith("Dark", StringComparison.Ordinal)) {
                 view.Appearance = NSAppearance.GetAppearance(NSAppearance.NameDarkAqua);
             }
 
-            return new View(view);
+            return button;
         }
 
         public override string ConvertToCode(FigmaNode currentNode)
