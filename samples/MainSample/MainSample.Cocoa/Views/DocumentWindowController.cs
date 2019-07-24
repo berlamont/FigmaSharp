@@ -37,6 +37,7 @@ using FigmaSharp;
 using FigmaSharp.Cocoa;
 using FigmaSharp.Models;
 using FigmaSharp.Services;
+using LiteForms.Cocoa;
 
 namespace FigmaSharp.Samples
 {
@@ -82,8 +83,7 @@ namespace FigmaSharp.Samples
             Load(version_id: "", page_id: "");
         }
 
-
-        NSScrollView my_scroll_view;
+		ScrollView scrollview;
 
         void Load(string version_id, string page_id)
         {
@@ -101,14 +101,12 @@ namespace FigmaSharp.Samples
                     var converters = AppContext.Current.GetFigmaConverters();
 
                     Console.WriteLine("TOKEN: " + Token);
-                    my_scroll_view = new NSScrollView();
-
-                    ScrollViewWrapper wrapper = new ScrollViewWrapper(my_scroll_view);
+					scrollview = new ScrollView ();
 
 					var fileProvider = new FigmaRemoteFileProvider();
 					var rendererService = new FigmaFileRendererService(fileProvider, converters);
 
-					rendererService.Start(Link_ID, wrapper);
+					rendererService.Start(Link_ID, scrollview);
 
                     var distributionService = new FigmaViewRendererDistributionService(rendererService);
                     distributionService.Start();
@@ -121,14 +119,14 @@ namespace FigmaSharp.Samples
                     //We want know the background color of the figma camvas and apply to our scrollview
                     var canvas = fileProvider.Nodes.OfType<FigmaCanvas>().FirstOrDefault();
                     if (canvas != null)
-                        wrapper.BackgroundColor = canvas.backgroundColor;
+						scrollview.BackgroundColor = canvas.backgroundColor;
 
-                    ////NOTE: some toolkits requires set the real size of the content of the scrollview before position layers
-                    wrapper.AdjustToContent();
+					////NOTE: some toolkits requires set the real size of the content of the scrollview before position layers
+					scrollview.AdjustToContent();
 
                     Title = Link_ID;
 
-					var scroll = (NSScrollView) wrapper.NativeObject;
+					var scroll = (NSScrollView)scrollview.NativeObject;
 					Window.ContentView.AddSubview (scroll);
 					scroll.Frame = Window.ContentView.Bounds;
 
