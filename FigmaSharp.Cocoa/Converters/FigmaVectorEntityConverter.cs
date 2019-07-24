@@ -41,7 +41,7 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-			var vector = new SvgShapeView();
+			var vector = new ImageView();
 			var currengroupView = (NSImageView)vector.NativeObject;
 			currengroupView.Configure((FigmaVectorEntity)currentNode);
 			return vector;
