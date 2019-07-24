@@ -83,6 +83,8 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="GameWindow.cs" />
+    <Compile Include="IMusicPlayer.cs" />
+    <Compile Include="MusicPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FigmaSharp\FigmaSharp.csproj">
