@@ -52,104 +52,21 @@ namespace FigmaSharp.Samples
             set { TitleTextField.StringValue = value; }
         }
 
+		public event EventHandler<string> VersionSelected;
 
-        public string Token = "";
+		public event EventHandler RefreshRequested;
 
-        public string Link_ID = "";
-        public string Version_ID = null;
-        public string Page_ID = null;
-
-
-        // FileProvider etc.
-
-
-        public DocumentWindowController(IntPtr handle) : base(handle)
+		public DocumentWindowController(IntPtr handle) : base(handle)
         {
         }
 
-
-        public override void WindowDidLoad()
+		public override void WindowDidLoad()
         {
             PositionWindow();
             base.WindowDidLoad();
-        }
+		}
 
-
-        public void LoadDocument(string token, string link_id)
-        {
-            Token = token;
-            Link_ID = link_id;
-
-            Load(version_id: "", page_id: "");
-        }
-
-		ScrollView scrollview;
-
-        void Load(string version_id, string page_id)
-        {
-            Title = string.Format("Opening “{0}”…", Link_ID);
-
-            (Window.ContentViewController as DocumentViewController).ToggleSpinnerState(toggle_on: true);
-            RefreshButton.Enabled = false;
-
-            new Thread(() => {
-
-                this.InvokeOnMainThread(() => {
-
-                    AppContext.Current.SetAccessToken(Token);
-
-                    var converters = AppContext.Current.GetFigmaConverters();
-
-                    Console.WriteLine("TOKEN: " + Token);
-					scrollview = new ScrollView ();
-
-					var fileProvider = new FigmaRemoteFileProvider();
-					var rendererService = new FigmaFileRendererService(fileProvider, converters);
-
-					rendererService.Start(Link_ID, scrollview);
-
-                    var distributionService = new FigmaViewRendererDistributionService(rendererService);
-                    distributionService.Start();
-
-                    fileProvider.ImageLinksProcessed += (s, e) => 
-                    {
-                        // done
-                    };
-
-                    //We want know the background color of the figma camvas and apply to our scrollview
-                    var canvas = fileProvider.Nodes.OfType<FigmaCanvas>().FirstOrDefault();
-                    if (canvas != null)
-						scrollview.BackgroundColor = canvas.backgroundColor;
-
-					////NOTE: some toolkits requires set the real size of the content of the scrollview before position layers
-					scrollview.AdjustToContent();
-
-                    Title = Link_ID;
-
-					var scroll = (NSScrollView)scrollview.NativeObject;
-					Window.ContentView.AddSubview (scroll);
-					scroll.Frame = Window.ContentView.Bounds;
-
-					UpdateVersionMenu();
-                    UpdatePagesPopupButton();
-
-                    RefreshButton.Enabled = true;
-                    PagePopUpButton.Enabled = true;
-
-                    (Window.ContentViewController as DocumentViewController).ToggleSpinnerState(toggle_on: false);
-
-                });
-
-            }).Start();
-        }
-
-
-        public void Reload()
-        {
-            Load(null, null);
-        }
-
-        void UpdatePagesPopupButton()
+		public void UpdatePagesPopupButton()
         {
             PagePopUpButton.AddItem("Page 1");
             PagePopUpButton.Activated += delegate {
@@ -157,12 +74,18 @@ namespace FigmaSharp.Samples
             };
         }
 
-        void UpdateVersionMenu()
+		public void EnableButtons (bool enable)
+		{
+			RefreshButton.Enabled = enable;
+			PagePopUpButton.Enabled = enable;
+		}
+
+        public void UpdateVersionMenu()
         {
             var menu = new VersionMenu();
 
             menu.VersionSelected += delegate (string version_id) {
-                Load(version_id, null);
+				VersionSelected?.Invoke(this, version_id);
             };
 
             menu.AddItem("1", "FigmaSharp.Cocoa 0.0.1", DateTime.Now);
@@ -175,41 +98,27 @@ namespace FigmaSharp.Samples
             menu.UseAsVersionsMenu();
         }
 
-
         partial void RefreshClicked(NSObject sender)
         {
-            ToggleSpinnerState(toggle_on: true);
-            RefreshButton.Enabled = false;
-
-            new Thread(() => {
-                Thread.Sleep(1000);
-
-                this.InvokeOnMainThread(() => {
-                    RefreshButton.Enabled = true;
-                    ToggleSpinnerState(toggle_on: false);
-                });
-
-            }).Start();
-
-            // Reload();
+			RefreshRequested?.Invoke(this, EventArgs.Empty);
         }
 
+		public void ToggleSpinnerState(bool toggle_on)
+		{
+			if (MainToolbar.VisibleItems[1].Identifier == "Spinner")
+			{
+				(MainToolbar.VisibleItems[1].View as NSProgressIndicator).StopAnimation(this);
+				MainToolbar.RemoveItem(1);
+			}
 
-        void ToggleSpinnerState(bool toggle_on)
-        {
-            if (MainToolbar.VisibleItems[1].Identifier == "Spinner") {
-                (MainToolbar.VisibleItems[1].View as NSProgressIndicator).StopAnimation(this);
-                MainToolbar.RemoveItem(1);
-            }
+			if (toggle_on)
+			{
+				MainToolbar.InsertItem("Spinner", 1);
+				(MainToolbar.VisibleItems[1].View as NSProgressIndicator).StartAnimation(this);
+			}
+		}
 
-            if (toggle_on) {
-                MainToolbar.InsertItem("Spinner", 1);
-                (MainToolbar.VisibleItems[1].View as NSProgressIndicator).StartAnimation(this);
-            }
-        }
-
-
-        void PositionWindow()
+		void PositionWindow()
         {
             WindowCount++;
             CGRect frame = Window.Frame;
@@ -220,12 +129,11 @@ namespace FigmaSharp.Samples
             Window.SetFrame(frame, display: true);
         }
 
-
-        void ShowError()
+        public void ShowError(string linkId)
         {
             var alert = new NSAlert() {
                 AlertStyle = NSAlertStyle.Warning,
-                MessageText = string.Format("Could not open “{0}”", Link_ID),
+                MessageText = string.Format("Could not open “{0}”", linkId),
                 InformativeText = "Please check if the provided Figma Link and Personal Access Token are correct.",
             };
 
