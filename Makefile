@@ -4,7 +4,7 @@ ARGS:=/p:Configuration="${CONFIG}" $(ARGS)
 
 all:
 	echo "Building FigmaSharp..."
-	msbuild FigmaSharp.sln $(ARGS)
+	msbuild FigmaSharp.LiteForms.sln $(ARGS)
 
 clean:
 	find . -type d -name bin -exec rm -rf {} \;
@@ -12,10 +12,10 @@ clean:
 	find . -type d -name packages -exec rm -rf {} \;
 
 pack:
-	msbuild MonoDevelop.Figma/MonoDevelop.Figma.csproj $(ARGS) /p:CreatePackage=true
+	msbuild FigmaSharp.LiteForms.sln $(ARGS) /p:CreatePackage=true
 
 install:
-	msbuild MonoDevelop.Figma/MonoDevelop.Figma.csproj $(ARGS) /p:InstallAddin=true
+	msbuild FigmaSharp.LiteForms.sln $(ARGS) /p:InstallAddin=true
 
 check-dependencies:
 	#if test "x$(CONFIG)" = "xDebug" || test "x$(CONFIG)" = "xRelease"; then \
@@ -32,8 +32,9 @@ nuget-download:
 	fi
 
 submodules: nuget-download
+	git submodule update --init --recursive
 	echo "Restoring FigmaSharp..."
-	msbuild FigmaSharp.sln /t:Restore
+	msbuild FigmaSharp.LiteForms.sln /t:Restore
 
 sdk: nuget-download
 	mono src/.nuget/nuget.exe pack FigmaSharp.nuspec
