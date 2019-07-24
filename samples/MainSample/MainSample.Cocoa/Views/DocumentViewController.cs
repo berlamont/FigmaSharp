@@ -67,7 +67,7 @@ namespace FigmaSharp.Samples
 		{
 			if (scrollview == null)
 			{
-				View.AddSubview(progressIndicator);
+				///View.AddSubview(progressIndicator);
 
 				scrollview = new ScrollView();
 				nativeScrollView = (FNSScrollview)scrollview.NativeObject;
@@ -83,7 +83,7 @@ namespace FigmaSharp.Samples
 		private void WindowController_VersionSelected(object sender, string versionId) => Reload(versionId);
 		private void WindowController_RefreshRequested(object sender, EventArgs e) => Reload();
 
-		NSProgressIndicator progressIndicator;
+		//NSProgressIndicator progressIndicator;
 
 		void Load(string version_id, string page_id)
 		{
@@ -91,8 +91,6 @@ namespace FigmaSharp.Samples
 				return;
 			}
 			windowController.Title = string.Format("Opening “{0}”…", Link_ID);
-
-			
 
 			ToggleSpinnerState(toggle_on: true);
 			windowController.EnableButtons(false);
