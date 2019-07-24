@@ -152,50 +152,50 @@ namespace FigmaSharp.Cocoa
         {
             Configure(view, (FigmaVectorEntity)child);
 
-            var shapeLayer = new CAShapeLayer
-            {
-                Path = NSBezierPath.FromRect(view.Bounds).ToCGPath(),
-                Frame = view.Layer.Frame
-            };
-            view.Layer = shapeLayer;
+            //var shapeLayer = new CAShapeLayer
+            //{
+            //    Path = NSBezierPath.FromRect(view.Bounds).ToCGPath(),
+            //    Frame = view.Layer.Frame
+            //};
+            //view.Layer = shapeLayer;
 
-            var fill = child.fills?.FirstOrDefault();
-            if (fill != null && fill.visible && fill.color != null)
-            {
-                shapeLayer.FillColor = fill.color.MixOpacity (fill.opacity).ToNSColor().CGColor;
-            } else
-            {
-                shapeLayer.FillColor = NSColor.Clear.CGColor;
-            }
+            //var fill = child.fills?.FirstOrDefault();
+            //if (fill != null && fill.visible && fill.color != null)
+            //{
+            //    shapeLayer.FillColor = fill.color.MixOpacity (fill.opacity).ToNSColor().CGColor;
+            //} else
+            //{
+            //    shapeLayer.FillColor = NSColor.Clear.CGColor;
+            //}
             
-            if (child.strokeDashes != null)
-            {
-                var number = new NSNumber[child.strokeDashes.Length];
-                for (int i = 0; i < child.strokeDashes.Length; i++)
-                {
-                    number[i] = child.strokeDashes[i];
-                }
-                shapeLayer.LineDashPattern = number;
-            }
+            //if (child.strokeDashes != null)
+            //{
+            //    var number = new NSNumber[child.strokeDashes.Length];
+            //    for (int i = 0; i < child.strokeDashes.Length; i++)
+            //    {
+            //        number[i] = child.strokeDashes[i];
+            //    }
+            //    shapeLayer.LineDashPattern = number;
+            //}
 
-            //shapeLayer.BackgroundColor = child.col
-            shapeLayer.LineWidth = child.strokeWeight * 2;
+            ////shapeLayer.BackgroundColor = child.col
+            //shapeLayer.LineWidth = child.strokeWeight * 2;
 
-            var strokes = child.strokes.FirstOrDefault();
-            if (strokes != null && strokes.visible)
-            {
-                if (strokes.color != null)
-                {
-                    shapeLayer.StrokeColor = strokes.color.MixOpacity (strokes.opacity).ToNSColor().CGColor;
-                    if (shapeLayer.LineWidth == 0)
-                    {
-                        shapeLayer.LineWidth = 1f;
-                    }
-                }
-            }
+            //var strokes = child.strokes.FirstOrDefault();
+            //if (strokes != null && strokes.visible)
+            //{
+            //    if (strokes.color != null)
+            //    {
+            //        shapeLayer.StrokeColor = strokes.color.MixOpacity (strokes.opacity).ToNSColor().CGColor;
+            //        if (shapeLayer.LineWidth == 0)
+            //        {
+            //            shapeLayer.LineWidth = 1f;
+            //        }
+            //    }
+            //}
             
-            shapeLayer.CornerRadius = child.cornerRadius;
-            view.AlphaValue = child.opacity;
+            //shapeLayer.CornerRadius = child.cornerRadius;
+            //view.AlphaValue = child.opacity;
         }
 
         public static void Configure(this StringBuilder builder, string name, RectangleVector child)
