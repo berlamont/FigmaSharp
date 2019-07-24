@@ -20,12 +20,13 @@ namespace FigmaSharp.Samples
 
 			foreach (var item in Subviews)
 			{
-				if (item is NSProgressIndicator) {
-					continue;
+				if (item is NSScrollView)
+				{
+					item.Frame = this.Bounds;
+					return;
 				}
-				item.Frame = Bounds;
 			}
-		}
 
+		}
 	}
 }
