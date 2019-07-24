@@ -41,10 +41,10 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var elipseView = new NSView();// { TranslatesAutoresizingMaskIntoConstraints = false };
+            var elipseView = new ImageView();// { TranslatesAutoresizingMaskIntoConstraints = false };
             var elipse = (FigmaElipse)currentNode;
-            elipseView.Configure(elipse);
-            return new View(elipseView);
+			((NSImageView) elipseView.NativeObject).Configure(elipse);
+            return elipseView;
         }
 
         public override string ConvertToCode(FigmaNode currentNode)

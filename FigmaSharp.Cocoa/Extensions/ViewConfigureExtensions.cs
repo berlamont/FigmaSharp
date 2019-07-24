@@ -55,42 +55,42 @@ namespace FigmaSharp.Cocoa
         {
             Configure(view, (FigmaNode)elipse);
 
-            var circleLayer = new CAShapeLayer();
-            var bezierPath = NSBezierPath.FromOvalInRect(new CGRect(0, 0, elipse.absoluteBoundingBox.Width, elipse.absoluteBoundingBox.Height));
-            circleLayer.Path = bezierPath.ToCGPath();
+            //var circleLayer = new CAShapeLayer();
+            //var bezierPath = NSBezierPath.FromOvalInRect(new CGRect(0, 0, elipse.absoluteBoundingBox.Width, elipse.absoluteBoundingBox.Height));
+            //circleLayer.Path = bezierPath.ToCGPath();
 
-            view.Layer.AddSublayer(circleLayer);
+            //view.Layer.AddSublayer(circleLayer);
 
-            var fills = elipse.fills.OfType<FigmaPaint>().FirstOrDefault();
-            if (fills != null && fills.color != null)
-            {
-                circleLayer.FillColor = fills.color.MixOpacity(fills.opacity).ToNSColor().CGColor;
-            } else
-            {
-                circleLayer.FillColor = NSColor.Clear.CGColor;
-            }
+            //var fills = elipse.fills.OfType<FigmaPaint>().FirstOrDefault();
+            //if (fills != null && fills.color != null)
+            //{
+            //    circleLayer.FillColor = fills.color.MixOpacity(fills.opacity).ToNSColor().CGColor;
+            //} else
+            //{
+            //    circleLayer.FillColor = NSColor.Clear.CGColor;
+            //}
 
-            var strokes = elipse.strokes.FirstOrDefault();
-            if (strokes != null)
-            {
-                if (strokes.color != null)
-                {
-                    circleLayer.StrokeColor = strokes.color.MixOpacity(strokes.opacity).ToNSColor().CGColor;
-                }
-            }
+            //var strokes = elipse.strokes.FirstOrDefault();
+            //if (strokes != null)
+            //{
+            //    if (strokes.color != null)
+            //    {
+            //        circleLayer.StrokeColor = strokes.color.MixOpacity(strokes.opacity).ToNSColor().CGColor;
+            //    }
+            //}
 
-            if (elipse.strokeDashes != null)
-            {
-                var number = new NSNumber[elipse.strokeDashes.Length];
-                for (int i = 0; i < elipse.strokeDashes.Length; i++)
-                {
-                    number[i] = elipse.strokeDashes[i];
-                }
-                circleLayer.LineDashPattern = number;
-            }
+            //if (elipse.strokeDashes != null)
+            //{
+            //    var number = new NSNumber[elipse.strokeDashes.Length];
+            //    for (int i = 0; i < elipse.strokeDashes.Length; i++)
+            //    {
+            //        number[i] = elipse.strokeDashes[i];
+            //    }
+            //    circleLayer.LineDashPattern = number;
+            //}
 
-            circleLayer.BackgroundColor = NSColor.Clear.CGColor;
-            circleLayer.LineWidth = elipse.strokeWeight;
+            //circleLayer.BackgroundColor = NSColor.Clear.CGColor;
+            //circleLayer.LineWidth = elipse.strokeWeight;
 
             view.AlphaValue = elipse.opacity;
         }
