@@ -39,7 +39,7 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-			var vector = new LiteForms.Graphics.Mac.SvgShapeView();
+			var vector = new ImageView();
 			var currengroupView = (NSImageView)vector.NativeObject;
 			currengroupView.Configure((RectangleVector)currentNode);
             return vector;
