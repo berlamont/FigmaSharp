@@ -25,101 +25,94 @@ namespace Game.Cocoa
 		ImageView playerTile;
         int points = 0;
 
-		//    #region Player Movement
+		void MovePlayer(Point point)
+		{
+			if (PlayerPositionCollidesWithWall(point))
+				return;
+			playerTile.SetPosition( point.X, point.Y);
 
-		//    public override void KeyDown(NSEvent theEvent)
-		//    {
-		//        if (theEvent.KeyCode == (ushort)NSKey.LeftArrow)
-		//        {
-		//var frame = playerTile.Allocation;
-		//MovePlayer(new CGPoint(frame.X - WalkModifier, frame.Y));
-		//            return;
-		//        }
+			Refresh();
+		}
 
-		//        if (theEvent.KeyCode == (ushort)NSKey.RightArrow)
-		//        {
-		//var frame = playerTile.Allocation;
-		//MovePlayer(new CGPoint(frame.X + WalkModifier, frame.Y));
-		//            return;
-		//        }
+		bool PlayerPositionCollidesWithWall(Point point)
+		{
+			var playerPosition = new Rectangle (point, playerTile.Size);
+			foreach (var gem in wallTiles)
+			{
+				if (gem.Allocation.IntersectsWith(playerPosition))
+					return true;
+			}
+			return false;
+		}
 
-		//        if (theEvent.KeyCode == (ushort)NSKey.UpArrow)
-		//        {
-		//var frame = playerTile.Allocation;
-		//MovePlayer(new CGPoint(frame.X, frame.Y + WalkModifier));
-		//            return;
-		//        }
+		void Refresh()
+		{
+			var playerPosition = playerTile.Allocation;
+			//if user is in a 
+			foreach (var spike in spikesTiles)
+			{
+				if (spike.Allocation.IntersectsWith(playerPosition))
+				{
+					PlayerDied();
+					return;
+				}
+			}
 
-		//        if (theEvent.KeyCode == (ushort)NSKey.DownArrow)
-		//        {
-		//var frame = playerTile.Allocation;
-		//MovePlayer(new CGPoint(frame.X, frame.Y - WalkModifier));
-		//            return;
-		//        }
-
-		//        base.KeyDown(theEvent);
-		//    }
-
-		//    #endregion
-
-		//void MovePlayer (CGPoint point)
-		//{
-		//    if (PlayerPositionCollidesWithWall (point))
-		//        return;
-		//    playerTile.SetPosition (point.X, point.Y);
-
-		//    Refresh();
-		//}
-
-		//bool PlayerPositionCollidesWithWall (CGPoint point)
-		//{
-		//    var playerPosition = new CGRect(point, playerTile.Frame.Size);
-		//    foreach (var gem in wallTiles)
-		//    {
-		//        if (gem.Frame.IntersectsWith(playerPosition))
-		//        {
-		//            return true;
-		//        }
-		//    }
-		//    return false;
-		//}
-
-		//void Refresh ()
-		//{
-		//    //if user is in a 
-		//    foreach (var spike in spikesTiles)
-		//    {
-		//        if (spike.Frame.IntersectsWith(playerTile.Frame))
-		//        {
-		//            PlayerDied();
-		//            return;
-		//        }
-		//    }
-
-		//    foreach (var gem in gemsTiles)
-		//    {
-		//        if (gem.Allocation.IntersectsWith (playerTile.Allocation))
-		//        {
-		//            gemsTiles.Remove(gem);
-		//            gem.RemoveFromParent ();
-		//            points++;
-		//            coinSound.Play();
-		//            break;
-		//        }
-		//    }
-		//    pointsLabel.Text StringValue = points.ToString ();
-		//}
+			foreach (var gem in gemsTiles)
+			{
+				if (gem.Allocation.IntersectsWith(playerTile.Allocation))
+				{
+					gemsTiles.Remove(gem);
+					gem.Parent.RemoveChild(gem);
+					points++;
+					coinSound.Play();
+					break;
+				}
+			}
+			pointsLabel.Text = points.ToString();
+		}
 
 		void PlayerDied()
 		{
-			//playerTile.SetFrameOrigin(startingPoint);
-			//var lastLive = heartTiles.FirstOrDefault();
-			//if (lastLive != null)
-			//{
-			//	heartTiles.Remove(lastLive);
-			//	lastLive.RemoveFromSuperview();
-			//}
-			//gameOverSound.Play();
+			playerTile.SetPosition (startingPoint);
+			var lastLive = heartTiles.FirstOrDefault();
+			if (lastLive != null)
+			{
+				heartTiles.Remove(lastLive);
+				lastLive.Parent.RemoveChild(lastLive);
+			}
+			gameOverSound.Play();
+		}
+
+		protected override void OnKeyDownPressed(object sender, NSEvent theEvent)
+		{
+			if (theEvent.KeyCode == (ushort)NSKey.LeftArrow)
+			{
+				var frame = playerTile.Allocation;
+				MovePlayer(new Point(frame.X - WalkModifier, frame.Y));
+				return;
+			}
+
+			if (theEvent.KeyCode == (ushort)NSKey.RightArrow)
+			{
+				var frame = playerTile.Allocation;
+				MovePlayer(new Point(frame.X + WalkModifier, frame.Y));
+				return;
+			}
+
+			if (theEvent.KeyCode == (ushort)NSKey.UpArrow)
+			{
+				var frame = playerTile.Allocation;
+				MovePlayer(new Point(frame.X, frame.Y - WalkModifier));
+				return;
+			}
+
+			if (theEvent.KeyCode == (ushort)NSKey.DownArrow)
+			{
+				var frame = playerTile.Allocation;
+				MovePlayer(new Point(frame.X, frame.Y + WalkModifier));
+				return;
+			}
 		}
 
 		Point startingPoint;
@@ -152,8 +145,8 @@ namespace Game.Cocoa
             var coinMusicPath = new NSUrl(NSBundle.MainBundle.PathForResource("Coin", "mp3"));
             coinSound = AVFoundation.AVAudioPlayer.FromUrl(coinMusicPath, out error);
 
-            //we want load the entire level 1
-            IView view = rendererService.RenderByName <IView>("Level1");
+			//we want load the entire level 1
+			IView view = rendererService.RenderByName <IView>("Level1");
 			Content = view;
 
             playerTile = rendererService.FindViewStartsWith<ImageView>("Player");
@@ -168,14 +161,14 @@ namespace Game.Cocoa
             wallTiles = rendererService.FindViewsStartsWith<ImageView>("Tile")
                 .ToArray();
 
-            //spikesTiles = rendererService.FindViewByName<ImageView>("Spikes")
-            //    .ToArray();
+			spikesTiles = rendererService.FindViewsStartsWith<ImageView>("Spikes")
+				.ToArray();
 
-            //heartTiles = rendererService.FindViewByName<ImageView>("Heart")
-            //    .OrderBy(s => s.Frame.X)
-            //    .ToList();
+			heartTiles = rendererService.FindViewsStartsWith<ImageView>("Heart")
+				.OrderBy(s => s.Allocation.X)
+				.ToList();
 
-            //Refresh();
-        }
+			Refresh();
+		}
     }
 }
