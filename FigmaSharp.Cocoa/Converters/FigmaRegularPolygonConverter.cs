@@ -31,6 +31,7 @@ using FigmaSharp.Converters;
 using FigmaSharp.Models;
 using LiteForms;
 using LiteForms.Cocoa;
+using LiteForms.Graphics.Mac;
 
 namespace FigmaSharp.Cocoa.Converters
 {
@@ -38,9 +39,10 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var currengroupView = new FNSImageView();
+			var vector = new SvgShapeView();
+			var currengroupView = (FNSImageView)vector.NativeObject;
             currengroupView.Configure((FigmaRegularPolygon)currentNode);
-            return new ImageView(currengroupView);
+            return vector;
         }
 
         public override string ConvertToCode(FigmaNode currentNode)

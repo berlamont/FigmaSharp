@@ -47,7 +47,19 @@ namespace FigmaSharp.Services
         protected IView container;
         protected IFigmaFileProvider fileProvider;
 
-        public T FindViewByName<T>(string name) where T : IView
+		public T FindViewStartsWith<T>(string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) where T : IView
+		{
+			foreach (var node in NodesProcessed)
+			{
+				if (node.View is T && node.FigmaNode.name.StartsWith(name, stringComparison))
+				{
+					return (T)node.View;
+				}
+			}
+			return default(T);
+		}
+		
+		public T FindViewByName<T>(string name) where T : IView
         {
             foreach (var node in NodesProcessed)
             {
@@ -59,13 +71,24 @@ namespace FigmaSharp.Services
             return default(T);
         }
 
+		public IEnumerable<T> FindViewsStartsWith<T>(string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
+		{
+			foreach (var node in NodesProcessed)
+			{
+				if (node.View is T && node.FigmaNode.name.StartsWith(name, stringComparison))
+				{
+					yield return (T)node.View;
+				}
+			}
+		}
+
 		public IEnumerable<T> FindViewsByName<T>(string name)
 		{
 			foreach (var node in NodesProcessed)
 			{
-				if (node.View.NativeObject is T && node.FigmaNode.name == name)
+				if (node.View is T && node.FigmaNode.name == name)
 				{
-					yield return (T)node.View.NativeObject;
+					yield return (T)node.View;
 				}
 			}
 		}

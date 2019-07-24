@@ -16,9 +16,10 @@ namespace FigmaSharp.Cocoa
         public static void Configure(this NSView view, FigmaFrameEntity child)
         {
             Configure(view, (FigmaNode)child);
-
-            view.AlphaValue = child.opacity;
-        }
+		
+			view.AlphaValue = child.opacity;
+			view.Layer.BackgroundColor = child.backgroundColor.MixOpacity(child.opacity).ToCGColor();
+		}
 
         public static void Configure(this StringBuilder builder, string name, FigmaNode child)
         {

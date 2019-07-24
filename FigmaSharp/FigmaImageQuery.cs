@@ -30,6 +30,14 @@ using System.Collections.Generic;
 
 namespace FigmaSharp
 {
+	public enum ImageQueryFormat
+	{
+		png,
+		jpg,
+		svg,
+		pdf
+	}
+
     public class FigmaImageQuery
     {
         public FigmaImageQuery(string document, IEnumerable<string> ids) : this(AppContext.Current.Token, document, ids)
@@ -45,10 +53,37 @@ namespace FigmaSharp
         }
 
         public string Document { get; set; }
-        public IEnumerable<string> Ids { get; set; }
+
+		/// <summary>
+		/// A comma separated list of node IDs to render
+		/// </summary>
+		public IEnumerable<string> Ids { get; set; }
+
         public string PersonalAccessToken { get; set; }
-        public string Scale { get; set; }
-        public string Format { get; set; }
-        public string Version { get; set; }
-    }
+
+		/// <summary>
+		/// A number between 0.01 and 4, the image scaling factor
+		/// </summary>
+		public float Scale { get; set; } = 1;
+
+		/// <summary>
+		/// A string enum for the image output format, can be jpg, png, svg, or pdf
+		/// </summary>
+		public ImageQueryFormat Format { get; set; }
+
+		/// <summary>
+		/// A specific version ID to use. Omitting this will use the current version of the file
+		/// </summary>
+		public string Version { get; set; }
+
+		/// <summary>
+		/// Whether to include id attributes for all SVG elements. Default: false.
+		/// </summary>
+		public bool SvgIncludeId { get; set; }
+
+		/// <summary>
+		/// Whether to simplify inside/outside strokes and use stroke attribute if possible instead of mask. Default: true.
+		/// </summary>
+		public bool SvgSimplifyStroke { get; set; } = true;
+	}
 }
