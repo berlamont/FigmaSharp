@@ -12,8 +12,11 @@ namespace FigmaSharp
 
         IView CreateEmptyView();
         FigmaViewConverter[] GetFigmaConverters();
+
         IImage GetImage(string url);
-        IImage GetImageFromFilePath(string filePath);
+		string GetSvgData(string url);
+
+		IImage GetImageFromFilePath(string filePath);
         string GetFigmaFileContent(string file, string token);
         FigmaResponse GetFigmaResponseFromContent(string template);
         string GetManifestResource(Assembly assembly, string file);

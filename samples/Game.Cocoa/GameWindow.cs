@@ -153,19 +153,19 @@ namespace Game.Cocoa
             coinSound = AVFoundation.AVAudioPlayer.FromUrl(coinMusicPath, out error);
 
             //we want load the entire level 1
-            IView view = rendererService.FindViewByName <IView>("Level1");
+            IView view = rendererService.RenderByName <IView>("Level1");
 			Content = view;
 
-            playerTile = rendererService.FindViewByName<ImageView>("Player");
+            playerTile = rendererService.FindViewStartsWith<ImageView>("Player");
 
             startingPoint = playerTile.Allocation.Origin;
 
             pointsLabel = rendererService.FindViewByName<Label>("Points");
 
-            gemsTiles = rendererService.FindViewsByName<ImageView>("Gem")
+            gemsTiles = rendererService.FindViewsStartsWith<ImageView>("Gem")
                 .ToList ();
 
-            wallTiles = rendererService.FindViewsByName<ImageView>("Tile")
+            wallTiles = rendererService.FindViewsStartsWith<ImageView>("Tile")
                 .ToArray();
 
             //spikesTiles = rendererService.FindViewByName<ImageView>("Spikes")

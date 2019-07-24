@@ -69,8 +69,9 @@ namespace FigmaSharp
         public FigmaViewConverter[] GetFigmaConverters() => figmaDelegate.GetFigmaConverters();
 
         public IImage GetImage(string url) => figmaDelegate.GetImage(url);
+		public string GetSvgData(string url) => figmaDelegate.GetSvgData(url);
 
-        public IImage GetImageFromFilePath(string filePath) =>
+		public IImage GetImageFromFilePath(string filePath) =>
             figmaDelegate.GetImageFromFilePath(filePath);
 
         public FigmaResponse GetFigmaResponseFromContent(string template) =>

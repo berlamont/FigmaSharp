@@ -34,7 +34,12 @@ namespace FigmaSharp.Cocoa
             return new Image(image);
         }
 
-        public IImage GetImageFromManifest (Assembly assembly, string imageRef)
+		public string GetSvgData(string url)
+		{
+			return "";
+		}
+
+		public IImage GetImageFromManifest (Assembly assembly, string imageRef)
         {
             var assemblyImage = ViewsHelper.GetManifestImageResource(assembly, string.Format("{0}.png", imageRef));
             return new Image (assemblyImage);

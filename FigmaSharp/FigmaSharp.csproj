@@ -27,5 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\LiteForms\LiteForms\LiteForms.csproj" />
+    <ProjectReference Include="..\external\LiteForms\LiteForms.Graphics\LiteForms.Graphics.csproj" />
   </ItemGroup>
 </Project>

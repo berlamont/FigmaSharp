@@ -44,11 +44,12 @@ namespace FigmaSharp.Cocoa.Converters
             var figmaText = ((FigmaText)currentNode);
             Console.WriteLine("'{0}' with Font:'{1}({2})' s:{3} w:{4} ...", figmaText.characters, figmaText.style.fontFamily, figmaText.style.fontPostScriptName, figmaText.style.fontSize, figmaText.style.fontWeight);
 
-            var font = figmaText.style.ToNSFont();
-            var textField = ViewsHelper.CreateLabel(figmaText.characters, font);
+			var label = new Label();
+			var textField = label.NativeObject as FNSTextField;
+			textField.Font = figmaText.style.ToNSFont();
+			label.Text = figmaText.characters;
             textField.Configure(figmaText);
-            var wrapper = new View(textField);
-            return wrapper;
+            return label;
         }
 
         public override string ConvertToCode(FigmaNode currentNode)

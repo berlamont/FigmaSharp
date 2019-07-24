@@ -73,6 +73,14 @@
       <Project>{3E0633F6-BD50-4D09-8601-A143F6CFDD44}</Project>
       <Name>LiteForms.Cocoa</Name>
     </ProjectReference>
+    <ProjectReference Include="..\external\LiteForms\LiteForms.Graphics\LiteForms.Graphics.csproj">
+      <Project>{0D389C98-38A9-47A4-9333-3126607AEBD3}</Project>
+      <Name>LiteForms.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\external\LiteForms\LiteForms.Graphics.Cocoa\LiteForms.Graphics.Cocoa.csproj">
+      <Project>{1C976133-E5AC-41E6-B58F-8B776300AE57}</Project>
+      <Name>LiteForms.Graphics.Cocoa</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />

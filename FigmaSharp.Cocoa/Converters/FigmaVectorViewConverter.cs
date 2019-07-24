@@ -40,7 +40,7 @@ namespace FigmaSharp.Cocoa.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var vector = ((FigmaVector)currentNode);
+            //var vector = ((FigmaVector)currentNode);
             var currengroupView = new FNSImageView();
             currengroupView.Configure((RectangleVector)currentNode);
             return new ImageView(currengroupView);
