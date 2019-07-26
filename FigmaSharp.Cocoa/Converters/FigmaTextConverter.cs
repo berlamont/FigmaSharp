@@ -31,7 +31,7 @@ using System.Text;
 
 using FigmaSharp.Converters;
 using FigmaSharp.Models;
-
+using FigmaSharp.Services;
 using LiteForms;
 using LiteForms.Cocoa;
 
@@ -39,7 +39,7 @@ namespace FigmaSharp.Cocoa.Converters
 {
     public class FigmaTextConverter : FigmaTextConverterBase
     {
-        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
             var figmaText = ((FigmaText)currentNode);
             Console.WriteLine("'{0}' with Font:'{1}({2})' s:{3} w:{4} ...", figmaText.characters, figmaText.style.fontFamily, figmaText.style.fontPostScriptName, figmaText.style.fontSize, figmaText.style.fontWeight);
@@ -52,7 +52,7 @@ namespace FigmaSharp.Cocoa.Converters
             return label;
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             var figmaText = ((FigmaText)currentNode);
             StringBuilder builder = new StringBuilder();
