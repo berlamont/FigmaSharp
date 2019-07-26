@@ -49,6 +49,10 @@ namespace LocalFile.Cocoa
 		public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
 		{
 			var spinner = new Spinner() { IsDark = true };
+			//var nativeView = (FNSProgressIndicator)spinner.NativeObject;
+			//nativeView.WidthAnchor.ConstraintEqualToConstant(36).Active = true;
+			//nativeView.HeightAnchor.ConstraintEqualToConstant(36).Active = true;
+			//loadingDialog.Size = new Size(36, 36);
 			return spinner;
 		}
 

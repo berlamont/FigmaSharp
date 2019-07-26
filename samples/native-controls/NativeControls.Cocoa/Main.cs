@@ -33,6 +33,7 @@ using CoreGraphics;
 using FigmaSharp;
 using FigmaSharp.Cocoa;
 using FigmaSharp.Models;
+using FigmaSharp.NativeControls.Cocoa;
 using FigmaSharp.Services;
 using LiteForms;
 using LiteForms.Cocoa;
@@ -132,7 +133,7 @@ namespace LocalFile.Cocoa
 
 		#region Example2
 
-		static async void Example2()
+		static void Example2()
 		{
 			var document = "b05oGrcu9WI9txiHqdhCUyE4";
 
@@ -143,13 +144,13 @@ namespace LocalFile.Cocoa
 			mainWindow.Content.BackgroundColor = Color.Transparent;
 			mainWindow.Borderless = true;
 			mainWindow.Resizable = false;
-			mainWindow.IsOpaque = false;
+			//mainWindow.IsOpaque = false;
 
-			mainWindow.ShowTitle = false;
+			//mainWindow.ShowTitle = false;
 			mainWindow.BackgroundColor = Color.Transparent;
 
 			//we add the control converters
-			var converters = FigmaSharp.NativeControls.Cocoa.Resources.GetConverters()
+			var converters = Resources.GetConverters()
 			.Union(FigmaSharp.AppContext.Current.GetFigmaConverters())
 			.ToArray();
 
@@ -157,17 +158,34 @@ namespace LocalFile.Cocoa
 			fileProvider.Load(document);
 
 			var rendererService = new FigmaViewRendererService(fileProvider, converters);
+			var options = new FigmaViewRendererServiceOptions { ScanChildrenFromFigmaInstances = false };
+
+			var figmaCanvas = fileProvider.Nodes
+				.OfType<FigmaCanvas>()
+				.FirstOrDefault();
+
+			rendererService.CustomConverters.Add(new CloseButtonConverter());
+
+			ProcessTransitionNodeID(figmaCanvas.prototypeStartNodeID, rendererService, options);
+		}
+
+		const string RecentItemsDialog = "RecentItemsDialog";
+		const string SignInDialog = "SignInDialog";
+		const string LoginDialog = "LoginDialog";
+		const string LoadingDialog = "LoadingDialog";
+
+		static async void LoadLoadingDialog(FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
+		{
+			mainWindow.Size = new Size(720, 467);
 
 			var loadingSpinnerConverter = new LoadingSpinnerConverter();
 			rendererService.CustomConverters.Add(loadingSpinnerConverter);
-			rendererService.CustomConverters.Add(new CloseButtonConverter());
+		
+			var loadingDialogFigmaNode = rendererService.FindNodeByName(LoadingDialog);
+			var loadingDialog = rendererService.RenderByName<IView>(LoadingDialog, options);
 
-			var options = new FigmaViewRendererServiceOptions { ScanChildrenFromFigmaInstances = false };
-
-			var loadingDialog = rendererService.RenderByName<IView>("LoadingDialog", options);
 			loadingDialog.BackgroundColor = new Color(0.27f, 0.15f, 0.41f);
 			loadingDialog.CornerRadius = 5;
-			loadingDialog.Size = new Size(36, 36);
 			SetContentDialog(loadingDialog);
 
 			rendererService.CustomConverters.Remove(loadingSpinnerConverter);
@@ -178,13 +196,18 @@ namespace LocalFile.Cocoa
 
 			//we wait for 5 seconds and we show next screen
 			await Task.Run(() => {
-				Thread.Sleep(5000);
-				FigmaSharp.AppContext.Current.BeginInvoke(() => LoadSignInDialog(rendererService, options));
+				if (loadingDialogFigmaNode is FigmaFrameEntity figmaFrameEntity)
+				{
+					Thread.Sleep((int)figmaFrameEntity.transitionDuration);
+					FigmaSharp.AppContext.Current.BeginInvoke(() => ProcessTransitionNodeID(figmaFrameEntity.transitionNodeID, rendererService, options));
+				}
 			});
 		}
 
-		static void LoadingRecentItemsDialog(FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
+		static void LoadRecentItemsDialog(FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
 		{
+			mainWindow.Size = new Size(720, 467);
+
 			var customConverters = new FigmaViewConverter[] {
 				new SearchFilterConverter(),
 			};
@@ -194,10 +217,17 @@ namespace LocalFile.Cocoa
 			var dialog = rendererService.RenderByName<IView>("RecentItemsDialog", options);
 			dialog.CornerRadius = 5;
 			dialog.BackgroundColor = Color.White;
+
 			SetContentDialog(dialog);
 
 			foreach (var viewConverter in customConverters)
 				rendererService.CustomConverters.Remove(viewConverter);
+
+			var searchBox = dialog.Children
+				.OfType<ISearchBox>()
+				.FirstOrDefault();
+
+			searchBox.Focus();
 
 			var closeButton = dialog.Children
 				.OfType<ImageButton>()
@@ -207,16 +237,19 @@ namespace LocalFile.Cocoa
 				NSRunningApplication.CurrentApplication.Terminate();
 			};
 		}
-
-		static void LoadSignInDialog (FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
+	
+		static void LoadLoginDialog(FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
 		{
+			mainWindow.Size = new Size(720, 467);
 			var customConverters = new FigmaViewConverter[] {
-				new DoThisLaterButtonConverter(),
+				new WhySignInLinkConverter (),
+				//new CreateAccountLinkConverter (),
+				//new DoThisLaterButtonConverter(),
 				new SignInMicrosoftButtonConverter(),
 			};
 			rendererService.CustomConverters.AddRange(customConverters);
 
-			var signInDialog = rendererService.RenderByName<IView>("SignInDialog", options);
+			var signInDialog = rendererService.RenderByName<IView>(LoginDialog, options);
 			signInDialog.CornerRadius = 5;
 			signInDialog.BackgroundColor = new Color(0.27f, 0.15f, 0.41f);
 			SetContentDialog(signInDialog);
@@ -224,17 +257,77 @@ namespace LocalFile.Cocoa
 			foreach (var viewConverter in customConverters)
 				rendererService.CustomConverters.Remove(viewConverter);
 
-			var signInButton = rendererService.FindViewByName<IButton>(SignInMicrosoftButtonConverter.SignInMicrosoftButtonName);
-			signInButton.Focus();
+			//logic
+			var signInButton = rendererService.FindViewByName<IFigmaTransitionButton>(SignInMicrosoftButtonConverter.SignInMicrosoftButtonName);
+			if (signInButton != null)
+			{
+				signInButton.Focus();
+				signInButton.Clicked += (s, e) => {
+					ProcessTransitionNodeID(signInButton.TransitionNodeID, rendererService, options);
+				};
+			}
 
-			signInButton.Clicked += (s, e) => {
-				LoadingRecentItemsDialog(rendererService, options);
-			};
+			var doThisLaterButton = rendererService.FindViewByName<IFigmaTransitionButton>(DoThisLaterButtonConverter.DoThisLaterButtonName);
+			if (doThisLaterButton != null)
+			{
+				doThisLaterButton.Clicked += (s, e) => {
+					ProcessTransitionNodeID(doThisLaterButton.TransitionNodeID, rendererService, options);
+				};
+			}
+			
+		}
 
-			var doThisLaterButton = rendererService.FindViewByName<IButton>(DoThisLaterButtonConverter.DoThisLaterButtonName);
-			doThisLaterButton.Clicked += (s, e) => {
-				LoadingRecentItemsDialog(rendererService, options);
-			};
+		static void ProcessTransitionNodeID(string transitionNodeId, FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
+		{
+			var node = rendererService.FindNodeById(transitionNodeId);
+			if (node.name == SignInDialog)
+			{
+				LoadSignInDialog(rendererService, options);
+			}
+			else if (node.name == RecentItemsDialog)
+			{
+				LoadRecentItemsDialog(rendererService, options);
+			}
+			else if (node.name == LoginDialog)
+			{
+				LoadLoginDialog(rendererService, options);
+			}
+			else if (node.name == LoadingDialog)
+			{
+				LoadLoadingDialog(rendererService, options);
+			}
+		}
+
+		static void LoadSignInDialog(FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
+		{
+			mainWindow.Size = new Size(440, 456);
+			//var customConverters = new FigmaViewConverter[] {
+			//	new SearchFilterConverter(),
+			//};
+			//rendererService.CustomConverters.AddRange(customConverters);
+
+			//new SearchFilterConverter ()
+			var dialog = rendererService.RenderByName<IView>(SignInDialog, options);
+			dialog.CornerRadius = 5;
+			dialog.BackgroundColor = Color.White;
+
+			SetContentDialog(dialog);
+
+			//foreach (var viewConverter in customConverters)
+			//	rendererService.CustomConverters.Remove(viewConverter);
+
+			var closeButton = dialog.Children
+				.OfType<IFigmaTransitionImageButton>()
+				.FirstOrDefault();
+
+			if (closeButton != null)
+			{
+				closeButton.Clicked += (s, e) =>
+				{
+					ProcessTransitionNodeID(closeButton.TransitionNodeID, rendererService, options);
+				};
+			}
+		
 		}
 
 		#endregion

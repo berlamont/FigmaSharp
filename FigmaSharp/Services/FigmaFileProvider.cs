@@ -314,12 +314,12 @@ namespace FigmaSharp.Services
 
                 var contentTemplate = GetContentTemplate(file);
 
+				//parse the json into a model format
                 Response = AppContext.Current.GetFigmaResponseFromContent(contentTemplate);
 
+				//proceses all the views recursively
                 foreach (var item in Response.document.children)
-                {
                     ProcessNodeRecursively(item, null);
-                }
             }
             catch (System.Net.WebException ex)
             {
@@ -372,9 +372,7 @@ namespace FigmaSharp.Services
             if (node is FigmaInstance instance)
             {
                 if (Response.components.TryGetValue(instance.componentId, out var figmaComponent))
-                {
                     instance.Component = figmaComponent;
-                }
             }
 
             if (node is IFigmaNodeContainer nodeContainer)

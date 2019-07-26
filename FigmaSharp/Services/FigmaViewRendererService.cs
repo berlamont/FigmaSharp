@@ -110,7 +110,12 @@ namespace FigmaSharp.Services
             return fileProvider.Nodes.FirstOrDefault(s => s.name == name);
         }
 
-        public ProcessedNode FindProcessedNodeByName(string name)
+		public FigmaNode FindNodeById(string id)
+		{
+			return fileProvider.Nodes.FirstOrDefault(s => s.id == id);
+		}
+
+		public ProcessedNode FindProcessedNodeByName(string name)
         {
             return NodesProcessed.FirstOrDefault(s => s.FigmaNode.name == name);
         }
@@ -377,16 +382,21 @@ namespace FigmaSharp.Services
                         y = absoluteBounding.absoluteBoundingBox.Y - parentAbsoluteBoundingBox.absoluteBoundingBox.Y;
                     }
 
-					//we need to ensure current view is in height
-					var instrinsic = child.View.IntrinsicContentSize;
-
 					child.View.SetAllocation(x, y,
-						Math.Max (instrinsic.Width, Math.Max(absoluteBounding.absoluteBoundingBox.Width, 1)),
-						Math.Max (instrinsic.Height, Math.Max(1, absoluteBounding.absoluteBoundingBox.Height))
+						Math.Max(absoluteBounding.absoluteBoundingBox.Width, 1),
+						Math.Max(1, absoluteBounding.absoluteBoundingBox.Height)
 						);
-                }
 
-                Recursively(child);
+					//we need to ensure current view is in height
+					//var instrinsic = child.View.IntrinsicContentSize;
+
+					//child.View.SetAllocation(x, y,
+					//	Math.Max (instrinsic.Width, Math.Max(absoluteBounding.absoluteBoundingBox.Width, 1)),
+					//	Math.Max (instrinsic.Height, Math.Max(1, absoluteBounding.absoluteBoundingBox.Height))
+					//	);
+				}
+
+				Recursively(child);
             }
         }
 

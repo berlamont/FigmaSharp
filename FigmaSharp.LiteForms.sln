@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGraphics.Mac", "external\L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FigmaSharp.Samples", "samples\MainSample\MainSample.Cocoa\FigmaSharp.Samples.csproj", "{96EC7ED1-203D-4833-BEE0-9E597CA3BF65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FigmaFileExporter", "FigmaSharp.Tools\FigmaFileExporter\FigmaFileExporter.csproj", "{8D690230-EBA5-4260-938C-9F9847DC13A6}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ExampleFigma.Shared\ExampleFigma.Shared.projitems*{461b4a01-c603-4c8a-9763-642197569e9a}*SharedItemsImports = 4
@@ -262,6 +264,18 @@ Global
 		{96EC7ED1-203D-4833-BEE0-9E597CA3BF65}.Release|iPhone.Build.0 = Release|Any CPU
 		{96EC7ED1-203D-4833-BEE0-9E597CA3BF65}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{96EC7ED1-203D-4833-BEE0-9E597CA3BF65}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Release|iPhone.Build.0 = Release|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{8D690230-EBA5-4260-938C-9F9847DC13A6}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
