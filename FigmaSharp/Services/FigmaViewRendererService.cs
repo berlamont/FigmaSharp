@@ -279,7 +279,8 @@ namespace FigmaSharp.Services
         }
     }
 
-    public class FigmaFileRendererService : FigmaRendererService
+	[Obsolete("Use FigmaViewRendererService instead")]
+	public class FigmaFileRendererService : FigmaRendererService
     {
         public FigmaFileRendererService(IFigmaFileProvider figmaProvider, FigmaViewConverter[] figmaViewConverters) : base (figmaProvider, figmaViewConverters)
         {
