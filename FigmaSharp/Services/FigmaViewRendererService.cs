@@ -191,8 +191,7 @@ namespace FigmaSharp.Services
                         if (processedNode.FigmaNode is IFigmaImage figmaImage)
                         {
                             //TODO: this should be replaced by svg
-                            if (figmaImage.HasImage())
-                            {
+                            if (figmaImage.HasImage()) {
                                 ImageVectors.Add(processedNode);
                             }
                         }
@@ -228,7 +227,7 @@ namespace FigmaSharp.Services
             Console.WriteLine($"Image Links ended.");
         }
 
-        protected CustomViewConverter GetProcessedConverter(FigmaNode currentNode, IEnumerable<CustomViewConverter> customViewConverters, ProcessedNode parent, FigmaViewRendererServiceOptions options)
+        protected CustomViewConverter GetProcessedConverter(FigmaNode currentNode, IEnumerable<CustomViewConverter> customViewConverters)
         {
             foreach (var customViewConverter in customViewConverters)
             {
@@ -247,17 +246,17 @@ namespace FigmaSharp.Services
 
             bool scanChildren = true;
 
-            var converter = GetProcessedConverter(currentNode, FigmaCustomConverters, parent, options);
+            var converter = GetProcessedConverter(currentNode, CustomConverters);
 
             if (converter == null)
             {
-                converter = GetProcessedConverter(currentNode, FigmaDefaultConverters, parent, options);
+                converter = GetProcessedConverter(currentNode, DefaultConverters);
             }
 
             ProcessedNode currentProcessedNode = null;
             if (converter != null)
             {
-                var currentView = options.IsToViewProcessed ? converter.ConvertTo(currentNode, parent) : null;
+                var currentView = options.IsToViewProcessed ? converter.ConvertTo(currentNode, parent, this) : null;
                 currentProcessedNode = new ProcessedNode() { FigmaNode = currentNode, View = currentView, ParentView = parent };
                 NodesProcessed.Add(currentProcessedNode);
 

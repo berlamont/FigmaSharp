@@ -43,7 +43,7 @@ namespace FigmaSharp.NativeControls.Base
                     case NativeControlType.ButtonStandardDark:
                     case NativeControlType.ButtonSmall:
                     case NativeControlType.ButtonSmallDark:
-                        return true;
+						return true;
                 }
             }
             return false;

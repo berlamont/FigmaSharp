@@ -32,12 +32,13 @@ using FigmaSharp.Cocoa;
 using FigmaSharp.Models;
 using LiteForms;
 using LiteForms.Cocoa;
+using FigmaSharp.Services;
 
 namespace FigmaSharp.NativeControls.Cocoa
 {
     public class ComboBoxConverter : ComboBoxConverterBase
     {
-        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
             var view = new NSComboBox();
 
@@ -63,7 +64,7 @@ namespace FigmaSharp.NativeControls.Cocoa
             return new View(view);
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             return string.Empty;
         }

@@ -34,12 +34,13 @@ using FigmaSharp.Models;
 using System;
 using LiteForms;
 using LiteForms.Cocoa;
+using FigmaSharp.Services;
 
 namespace FigmaSharp.NativeControls.Cocoa
 {
     public class ButtonConverter : ButtonConverterBase
     {
-		public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+		public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
             var figmaInstance = (FigmaInstance)currentNode;
 
@@ -48,16 +49,19 @@ namespace FigmaSharp.NativeControls.Cocoa
 			view.Title = "";
             view.BezelStyle = NSBezelStyle.Rounded;
 
-            var controlType = figmaInstance.ToControlType();
+			button.Size = new Size(figmaInstance.absoluteBoundingBox.Width, 30);
+
+			var controlType = figmaInstance.ToControlType();
             switch (controlType)
             {
                 case NativeControlType.ButtonLarge:
                 case NativeControlType.ButtonLargeDark:
-                    view.ControlSize = NSControlSize.Regular;
+					view.ControlSize = NSControlSize.Regular;
                     break;
                 case NativeControlType.ButtonStandard:
                 case NativeControlType.ButtonStandardDark:
-                    view.ControlSize = NSControlSize.Regular;
+				
+					view.ControlSize = NSControlSize.Regular;
                     break;
                 case NativeControlType.ButtonSmall:
                 case NativeControlType.ButtonSmallDark:
@@ -84,7 +88,18 @@ namespace FigmaSharp.NativeControls.Cocoa
                 if (group.name == "Disabled") {
 					button.Enabled = false;
                 }
-            }
+            } else
+			{
+				var label = figmaInstance.children
+				   .OfType<FigmaText>()
+				   .FirstOrDefault();
+
+				if (label != null)
+				{
+					button.Text = label.characters;
+					view.Font = label.style.ToNSFont();
+				}
+			}
 
             if (controlType.ToString().EndsWith("Dark", StringComparison.Ordinal))
             {
@@ -93,7 +108,7 @@ namespace FigmaSharp.NativeControls.Cocoa
             return button;
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             var builder = new StringBuilder();
             var name = "[NAME]";
