@@ -267,13 +267,18 @@ namespace LocalFile.Cocoa
 
 			var doThisLaterButton = rendererService.FindViewByName<IButton>(DoThisLaterButtonConverter.DoThisLaterButtonName);
 			doThisLaterButton.Clicked += (s, e) => {
-				if (signInButton is IFigmaTransitionButton figmaTransition)
+				if (doThisLaterButton is IFigmaTransitionButton figmaTransition)
 					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
 			};
 		}
 
 		static void ProcessTransitionNodeID(string transitionNodeId, FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
 		{
+			if (string.IsNullOrEmpty (transitionNodeId))
+			{
+				return;
+			}
+
 			var node = rendererService.FindNodeById(transitionNodeId);
 			if (node.name == SignInDialog)
 			{
@@ -290,6 +295,13 @@ namespace LocalFile.Cocoa
 			else if (node.name == LoadingDialog)
 			{
 				LoadLoadingDialog(rendererService, options);
+			} else
+			{
+				var selectedNode = rendererService.FindNodeById(transitionNodeId);
+				var storyboardRedered = rendererService.RenderByNode<IView>(selectedNode);
+
+				storyboardRedered.CornerRadius = 5;
+				SetContentDialog(storyboardRedered);
 			}
 		}
 
