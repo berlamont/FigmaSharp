@@ -24,28 +24,22 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-using FigmaSharp;
-using FigmaSharp.Models;
-using FigmaSharp.Services;
 using LiteForms;
-using LiteForms.Cocoa;
 
-namespace LocalFile.Cocoa
+namespace LocalFile
 {
-	class CloseButtonConverter : FigmaViewConverter
+	public interface IFigmaTransitionButton : IButton
 	{
-		public const string CloseButtonId = "window-close";
+		string TransitionNodeID { get; set; }
+		float TransitionDuration { get; set; }
+		string TransitionEasing { get; set; }
+	}
 
-		public override bool CanConvert(FigmaNode currentNode) => currentNode.name == CloseButtonId;
-
-		public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
-		{
-			var button = FigmaSharp.NativeControls.Cocoa.TransitionHelper.CreateImageButtonFromFigmaNode(currentNode);
-			//button.Border = false;
-			return button;
-		}
-		public override bool ScanChildren(FigmaNode currentNode) => false;
-		public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService) => string.Empty;
+	public interface IFigmaTransitionImageButton : IImageButton
+	{
+		string TransitionNodeID { get; set; }
+		float TransitionDuration { get; set; }
+		string TransitionEasing { get; set; }
 	}
 }
 

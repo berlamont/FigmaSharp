@@ -33,12 +33,14 @@ using LiteForms.Cocoa;
 using System.Linq;
 using CoreAnimation;
 using FigmaSharp.Services;
+using FigmaSharp.NativeControls.Cocoa;
 
 namespace LocalFile.Cocoa
 {
 	class SignInMicrosoftButtonConverter : FigmaViewConverter
 	{
 		public const string SignInMicrosoftButtonName = "SignInMicrosoftButton";
+		const string LogoImageName = "MSLogoImage";
 
 		public override bool ScanChildren(FigmaNode currentNode) => false;
 
@@ -47,25 +49,27 @@ namespace LocalFile.Cocoa
 			return currentNode.name == SignInMicrosoftButtonName;
 		}
 
-		const string LogoImageName = "MSLogoImage";
-
 		public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
 		{
 			string text = string.Empty;
 			if (currentNode is IFigmaNodeContainer container)
 			{
-				var figmaText = container.children.OfType<FigmaText>().FirstOrDefault();
+				var figmaText = container.children
+					.OfType<FigmaText>()
+					.FirstOrDefault();
+
 				if (figmaText != null)
 					text = figmaText.characters;
 			}
 
 			IView msLogoView = null;
-
 			if (rendererService is FigmaViewRendererService viewRendererService)
 				msLogoView = viewRendererService.RenderByName<IView>(LogoImageName);
 		
 			var flatButton =  new FixedFlatButton(text, msLogoView.NativeObject as NSView);
-			var button = new Button(flatButton) { IsDark = true };
+
+			IButton button = TransitionHelper.CreateButtonFromFigmaNode (flatButton, currentNode);
+			button.IsDark = true;
 			return button;
 		}
 
@@ -73,51 +77,6 @@ namespace LocalFile.Cocoa
 		{
 			return string.Empty;
 		}
-
-		#region Logo
-
-		const int MicrosoftLogoSize = 23;
-
-		NSView GetMicrosoftLogoView()
-		{
-			var container = new NSView
-			{
-				WantsLayer = true
-			};
-			container.SetFrameSize(new CGSize(MicrosoftLogoSize, MicrosoftLogoSize));
-
-			var view138 = new CALayer
-			{
-				Frame = new CGRect(0f, 12f, 11f, 11f),
-				BackgroundColor = NSColor.FromRgba(0.9372549f, 0.3176471f, 0.1803922f, 1f).CGColor
-			};
-			container.Layer.AddSublayer(view138);
-
-			var view139 = new CALayer
-			{
-				Frame = new CGRect(12, 12, 11f, 11f),
-				BackgroundColor = NSColor.FromRgba(0.5019608f, 0.7215686f, 0.1333333f, 1f).CGColor
-			};
-			container.Layer.AddSublayer(view139);
-
-			var view140 = new CALayer
-			{
-				Frame = new CGRect(0f, 0, 11f, 11f),
-				BackgroundColor = NSColor.FromRgba(0.1058824f, 0.6470588f, 0.9254902f, 1f).CGColor
-			};
-			container.Layer.AddSublayer(view140);
-
-			var view141 = new CALayer
-			{
-				Frame = new CGRect(12, 0, 11f, 11f),
-				BackgroundColor = NSColor.FromRgba(0.9921569f, 0.7215686f, 0.172549f, 1f).CGColor
-			};
-			container.Layer.AddSublayer(view141);
-
-			return container;
-		}
-		#endregion
-
 	}
 }
 

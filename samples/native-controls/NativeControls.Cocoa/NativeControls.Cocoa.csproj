@@ -90,6 +90,8 @@
     <Compile Include="Converters\SearchFilterConverter.cs" />
     <Compile Include="Views\CustomSearchField.cs" />
     <Compile Include="Converters\OperationButtonConverter.cs" />
+    <Compile Include="Converters\CreateAccountLinkConverter.cs" />
+    <Compile Include="Converters\WhySignInLinkConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

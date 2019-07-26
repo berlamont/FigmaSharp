@@ -30,6 +30,7 @@ using FigmaSharp.Services;
 using LiteForms;
 using LiteForms.Cocoa;
 using System.Linq;
+using FigmaSharp.NativeControls.Cocoa;
 
 namespace LocalFile.Cocoa
 {
@@ -58,7 +59,8 @@ namespace LocalFile.Cocoa
 			}
 
 			var flatButton = new FixedFlatButton(text);
-			var button = new Button(flatButton) { IsDark = true };
+			var button = TransitionHelper.CreateButtonFromFigmaNode(flatButton, currentNode);
+			button.IsDark = true;
 			return button;
 		}
 

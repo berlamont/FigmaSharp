@@ -32,18 +32,23 @@ using LiteForms.Cocoa;
 
 namespace LocalFile.Cocoa
 {
-	class CloseButtonConverter : FigmaViewConverter
+	class CreateAccountLinkConverter : FigmaViewConverter
 	{
-		public const string CloseButtonId = "window-close";
+		public const string SearchFilterId = "filter";
 
-		public override bool CanConvert(FigmaNode currentNode) => currentNode.name == CloseButtonId;
+		public override bool CanConvert(FigmaNode currentNode) => currentNode.name == "CreateAccountLink";
 
 		public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
 		{
-			var button = FigmaSharp.NativeControls.Cocoa.TransitionHelper.CreateImageButtonFromFigmaNode(currentNode);
-			//button.Border = false;
-			return button;
+			var figmaText = (FigmaText)currentNode;
+			var linkButton = new Button
+			{
+				Text = figmaText.characters,
+				Border = false
+			};
+			return linkButton;
 		}
+
 		public override bool ScanChildren(FigmaNode currentNode) => false;
 		public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService) => string.Empty;
 	}
