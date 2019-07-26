@@ -73,6 +73,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Converters\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -80,6 +82,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Converters\DoThisLaterButtonConverter.cs" />
+    <Compile Include="Converters\LoadingSpinnerConverter.cs" />
+    <Compile Include="Converters\SignInMicrosoftButtonConverter.cs" />
+    <Compile Include="Views\FixedFlatButton.cs" />
+    <Compile Include="Converters\CloseButtonConverter.cs" />
+    <Compile Include="Converters\SearchFilterConverter.cs" />
+    <Compile Include="Views\CustomSearchField.cs" />
+    <Compile Include="Converters\OperationButtonConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
