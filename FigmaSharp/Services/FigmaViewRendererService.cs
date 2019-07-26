@@ -339,12 +339,22 @@ namespace FigmaSharp.Services
 			return (T)ProcessFigmaNodeToView(node, options);
 		}
 
-		IView ProcessFigmaNodeToView (FigmaNode node, FigmaViewRendererServiceOptions options)
+		public IView ProcessFigmaNodeToView (FigmaNode node, FigmaViewRendererServiceOptions options)
 		{
 			ProcessFromNode (node, null, options);
 			var processedNode = FindProcessedNodeById(node.id);
 			Recursively(processedNode);
 			return processedNode.View;
+		}
+
+		public T RenderByNode<T>(FigmaNode node) where T : IView
+		{
+			return RenderByNode<T>(node, new FigmaViewRendererServiceOptions());
+		}
+
+		public T RenderByNode<T>(FigmaNode node, FigmaViewRendererServiceOptions options) where T : IView
+		{
+			return (T)ProcessFigmaNodeToView(node, options);
 		}
 
 		public T RenderByName<T>(string figmaName) where T : IView
