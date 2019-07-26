@@ -38,8 +38,8 @@ namespace FigmaSharp.Services
 {
     public class FigmaRendererService
     {
-        protected readonly FigmaViewConverter[] FigmaDefaultConverters;
-        protected readonly FigmaViewConverter[] FigmaCustomConverters;
+        protected readonly List<FigmaViewConverter> DefaultConverters;
+        public readonly List<FigmaViewConverter> CustomConverters;
 
         public List<ProcessedNode> NodesProcessed = new List<ProcessedNode>();
         public readonly List<ProcessedNode> ImageVectors = new List<ProcessedNode>();
@@ -139,8 +139,8 @@ namespace FigmaSharp.Services
         public FigmaRendererService(IFigmaFileProvider figmaProvider, FigmaViewConverter[] figmaViewConverters)
         {
             this.fileProvider = figmaProvider;
-            FigmaDefaultConverters = figmaViewConverters.Where(s => s.IsLayer).ToArray();
-            FigmaCustomConverters = figmaViewConverters.Where(s => !s.IsLayer).ToArray();
+            DefaultConverters = figmaViewConverters.Where(s => s.IsLayer).ToList();
+            CustomConverters = figmaViewConverters.Where(s => !s.IsLayer).ToList();
         }
 
         public void ProcessFromNode (FigmaNode figmaNode, IView View, FigmaViewRendererServiceOptions options)
