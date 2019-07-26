@@ -184,10 +184,8 @@ namespace FigmaSharp.Services
 							var vector = imageFigmaNodes.FirstOrDefault(s => s.FigmaNode.id == figmaNodeId);
 							Console.Write("[{0}:{1}:{2}] {3}...", vector.FigmaNode.GetType(), vector.FigmaNode.id, vector.FigmaNode.name, imageUrl);
 
-							if (vector != null && vector.View is LiteForms.Graphics.ISvgShapeView imageView)
-							{
-								AppContext.Current.BeginInvoke(() =>
-								{
+							if (vector != null && vector.View is LiteForms.Graphics.ISvgShapeView imageView) {
+								AppContext.Current.BeginInvoke(() => {
 									imageView.Load(image);
 								});
 							}
@@ -204,11 +202,14 @@ namespace FigmaSharp.Services
 							var vector = imageFigmaNodes.FirstOrDefault(s => s.FigmaNode.id == figmaNodeId);
 							Console.Write("[{0}:{1}:{2}] {3}...", vector.FigmaNode.GetType(), vector.FigmaNode.id, vector.FigmaNode.name, imageUrl);
 
-							if (vector != null && vector.View is IImageView imageView)
-							{
-								AppContext.Current.BeginInvoke(() =>
-								{
-									imageView.Image = Image;
+							if (vector != null) {
+								AppContext.Current.BeginInvoke(() => {
+									if (vector.View is IImageView imageView) {
+										imageView.Image = Image;
+									}
+									else if(vector.View is IImageButton imageButton) {
+										imageButton.Image = Image;
+									}
 								});
 							}
 							Console.Write("OK \n");
