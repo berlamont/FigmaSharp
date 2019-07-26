@@ -50,7 +50,9 @@ namespace FigmaSharp.Services
         void Save(string filePath);
         string GetContentTemplate(string file);
         void OnStartImageLinkProcessing(List<ProcessedNode> imageVectors);
-    }
+
+		FigmaNode FindByPath(params string[] path);
+	}
 
     public class FigmaLocalFileProvider : FigmaFileProvider
     {
@@ -335,7 +337,34 @@ namespace FigmaSharp.Services
             }
         }
 
-        void ProcessNodeRecursively(FigmaNode node, FigmaNode parent)
+		/// <summary>
+		/// Finds a node using the path of the views, returns null in case of no data
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public FigmaNode FindByPath(params string[] path)
+		{
+			if (path.Length == 0)
+			{
+				return null;
+			}
+
+			FigmaNode figmaNode = null;
+			for (int i = 0; i < path.Length; i++)
+			{
+				if (i == 0)
+					figmaNode = Nodes.FirstOrDefault(s => s.name == path[i]);
+				else
+					figmaNode = Nodes.FirstOrDefault(s => s.name == path[i] && s.Parent.id == figmaNode.id);
+
+				if (figmaNode == null)
+					return null;
+			}
+			return figmaNode;
+		}
+
+
+		void ProcessNodeRecursively(FigmaNode node, FigmaNode parent)
         {
             node.Parent = parent;
             Nodes.Add(node);

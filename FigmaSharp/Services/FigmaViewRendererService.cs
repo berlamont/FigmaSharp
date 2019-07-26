@@ -115,7 +115,12 @@ namespace FigmaSharp.Services
             return NodesProcessed.FirstOrDefault(s => s.FigmaNode.name == name);
         }
 
-        FigmaNode GetRecursively (string name, FigmaNode figmaNode)
+		public ProcessedNode FindProcessedNodeById(string Id)
+		{
+			return NodesProcessed.FirstOrDefault(s => s.FigmaNode.id == Id);
+		}
+
+		FigmaNode GetRecursively (string name, FigmaNode figmaNode)
         {
             if (figmaNode.name == name)
             {
@@ -321,7 +326,23 @@ namespace FigmaSharp.Services
         {
         }
 
-        public T RenderByName<T>(string figmaName) where T : IView
+		public T RenderByPath<T>(FigmaViewRendererServiceOptions options, params string[] path) where T : IView
+		{
+			FigmaNode node = fileProvider.FindByPath(path);
+			if (node == null)
+				return default(T);
+			return (T)ProcessFigmaNodeToView(node, options);
+		}
+
+		IView ProcessFigmaNodeToView (FigmaNode node, FigmaViewRendererServiceOptions options)
+		{
+			ProcessFromNode (node, null, options);
+			var processedNode = FindProcessedNodeById(node.id);
+			Recursively(processedNode);
+			return processedNode.View;
+		}
+
+		public T RenderByName<T>(string figmaName) where T : IView
         {
             return RenderByName <T>(figmaName, new FigmaViewRendererServiceOptions());
         }
@@ -331,12 +352,8 @@ namespace FigmaSharp.Services
             var node = FindNodeByName(figmaName);
             if (node == null)
                 return default (T);
-            ProcessFromNode (node, null, options);
-
-            var processedNode = FindProcessedNodeByName(figmaName);
-            Recursively(processedNode);
-            return (T) processedNode.View;
-        }
+			return (T)ProcessFigmaNodeToView(node, options);
+		}
 
         void Recursively(ProcessedNode parentNode)
         {
@@ -360,7 +377,13 @@ namespace FigmaSharp.Services
                         y = absoluteBounding.absoluteBoundingBox.Y - parentAbsoluteBoundingBox.absoluteBoundingBox.Y;
                     }
 
-                    child.View.SetAllocation(x, y, Math.Max(absoluteBounding.absoluteBoundingBox.Width, 1), Math.Max(1, absoluteBounding.absoluteBoundingBox.Height));
+					//we need to ensure current view is in height
+					var instrinsic = child.View.IntrinsicContentSize;
+
+					child.View.SetAllocation(x, y,
+						Math.Max (instrinsic.Width, Math.Max(absoluteBounding.absoluteBoundingBox.Width, 1)),
+						Math.Max (instrinsic.Height, Math.Max(1, absoluteBounding.absoluteBoundingBox.Height))
+						);
                 }
 
                 Recursively(child);
