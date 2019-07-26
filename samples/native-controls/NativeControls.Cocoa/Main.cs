@@ -226,11 +226,10 @@ namespace LocalFile.Cocoa
 			var searchBox = dialog.Children
 				.OfType<ISearchBox>()
 				.FirstOrDefault();
-
 			searchBox.Focus();
 
 			var closeButton = dialog.Children
-				.OfType<ImageButton>()
+				.OfType<IImageButton>()
 				.FirstOrDefault();
 
 			closeButton.Clicked += (s, e) => {
@@ -242,10 +241,11 @@ namespace LocalFile.Cocoa
 		{
 			mainWindow.Size = new Size(720, 467);
 			var customConverters = new FigmaViewConverter[] {
-				new WhySignInLinkConverter (),
+					new DoThisLaterButtonConverter(),
+					new SignInMicrosoftButtonConverter(),
 				//new CreateAccountLinkConverter (),
-				//new DoThisLaterButtonConverter(),
-				new SignInMicrosoftButtonConverter(),
+				//new WhySignInLinkConverter (),
+				
 			};
 			rendererService.CustomConverters.AddRange(customConverters);
 
@@ -258,23 +258,18 @@ namespace LocalFile.Cocoa
 				rendererService.CustomConverters.Remove(viewConverter);
 
 			//logic
-			var signInButton = rendererService.FindViewByName<IFigmaTransitionButton>(SignInMicrosoftButtonConverter.SignInMicrosoftButtonName);
-			if (signInButton != null)
-			{
-				signInButton.Focus();
-				signInButton.Clicked += (s, e) => {
-					ProcessTransitionNodeID(signInButton.TransitionNodeID, rendererService, options);
-				};
-			}
+			var signInButton = rendererService.FindViewByName<IButton>(SignInMicrosoftButtonConverter.SignInMicrosoftButtonName);
+			signInButton.Focus();
+			signInButton.Clicked += (s, e) => {
+				if (signInButton is IFigmaTransitionButton figmaTransition)
+					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
+			};
 
-			var doThisLaterButton = rendererService.FindViewByName<IFigmaTransitionButton>(DoThisLaterButtonConverter.DoThisLaterButtonName);
-			if (doThisLaterButton != null)
-			{
-				doThisLaterButton.Clicked += (s, e) => {
-					ProcessTransitionNodeID(doThisLaterButton.TransitionNodeID, rendererService, options);
-				};
-			}
-			
+			var doThisLaterButton = rendererService.FindViewByName<IButton>(DoThisLaterButtonConverter.DoThisLaterButtonName);
+			doThisLaterButton.Clicked += (s, e) => {
+				if (signInButton is IFigmaTransitionButton figmaTransition)
+					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
+			};
 		}
 
 		static void ProcessTransitionNodeID(string transitionNodeId, FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
@@ -317,17 +312,13 @@ namespace LocalFile.Cocoa
 			//	rendererService.CustomConverters.Remove(viewConverter);
 
 			var closeButton = dialog.Children
-				.OfType<IFigmaTransitionImageButton>()
+				.OfType<IImageButton>()
 				.FirstOrDefault();
 
-			if (closeButton != null)
-			{
-				closeButton.Clicked += (s, e) =>
-				{
-					ProcessTransitionNodeID(closeButton.TransitionNodeID, rendererService, options);
-				};
-			}
-		
+			closeButton.Clicked += (s, e) => {
+				if (closeButton is IFigmaTransitionImageButton figmaTransition)
+					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
+			};
 		}
 
 		#endregion

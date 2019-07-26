@@ -48,9 +48,9 @@ namespace FigmaSharp.NativeControls.Cocoa
 			return btn;
 		}
 
-		public static IButton CreateImageButtonFromFigmaNode(FNSButton button, FigmaNode currentNode)
+		public static IImageButton CreateImageButtonFromFigmaNode(FNSButton button, FigmaNode currentNode)
 		{
-			IButton btn = null;
+			IImageButton btn = null;
 			if (currentNode is FigmaFrameEntity figmaFrameEntity)
 			{
 				if (!string.IsNullOrEmpty(figmaFrameEntity.transitionNodeID))
@@ -64,13 +64,13 @@ namespace FigmaSharp.NativeControls.Cocoa
 				}
 			}
 			if (btn == null)
-				btn = new Button(button);
+				btn = new ImageButton(button);
 			return btn;
 		}
 
-		public static IButton CreateImageButtonFromFigmaNode(FigmaNode currentNode)
+		public static IImageButton CreateImageButtonFromFigmaNode(FigmaNode currentNode)
 		{
-			IButton btn = null;
+			IImageButton btn = null;
 			if (currentNode is FigmaFrameEntity figmaFrameEntity)
 			{
 				if (!string.IsNullOrEmpty(figmaFrameEntity.transitionNodeID))
@@ -84,7 +84,7 @@ namespace FigmaSharp.NativeControls.Cocoa
 				}
 			}
 			if (btn == null)
-				btn = new Button();
+				btn = new ImageButton();
 			return btn;
 		}
 
