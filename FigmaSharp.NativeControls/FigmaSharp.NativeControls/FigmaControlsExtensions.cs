@@ -60,7 +60,9 @@ namespace FigmaSharp.NativeControls
             { "4a606f23d957d508b11707faba119cbd7edf4565", NativeControlType.ButtonStandardDark },
             { "c252a811c880b9ab074d2ba63d3e279e7e3bad4a", NativeControlType.ButtonSmallDark },
 
-            { "a31379072ea9b5b2ed501c707537df70e61e867d", NativeControlType.TextFieldStandard },
+			{ "65722325467a63cc1dcb0851cd7cdc1bb3b8bd7c", NativeControlType.ButtonStandardDark }, //not sure why we have 2 instances
+
+			{ "a31379072ea9b5b2ed501c707537df70e61e867d", NativeControlType.TextFieldStandard },
             { "6881fe7b35babca25147cb0cbadf401a266cda26", NativeControlType.TextFieldSmall },
             { "d0dfb49c121f3f2619096456026e91e224ac4248", NativeControlType.TextFieldStandardDark },
             { "646b4c57510bd605393f887599a1665d828216ef", NativeControlType.TextFieldSmallDark },
