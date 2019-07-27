@@ -52,7 +52,8 @@ namespace FigmaSharp.Services
         void OnStartImageLinkProcessing(List<ProcessedNode> imageVectors);
 
 		FigmaNode FindByPath(params string[] path);
-	}
+        FigmaNode FindByName(string nodeName);
+    }
 
     public class FigmaLocalFileProvider : FigmaFileProvider
     {
@@ -363,8 +364,12 @@ namespace FigmaSharp.Services
 			return figmaNode;
 		}
 
+        public FigmaNode FindByName(string name)
+        {
+            return Nodes.FirstOrDefault(s => s.name == name);
+        }
 
-		void ProcessNodeRecursively(FigmaNode node, FigmaNode parent)
+        void ProcessNodeRecursively(FigmaNode node, FigmaNode parent)
         {
             node.Parent = parent;
             Nodes.Add(node);

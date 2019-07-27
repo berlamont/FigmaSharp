@@ -63,6 +63,7 @@
     <Compile Include="Converters\TextFieldConverter.cs" />
     <Compile Include="Views\FigmaTransitionButton.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="Converters\WindowConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FigmaSharp.NativeControls\FigmaSharp.NativeControls.csproj">

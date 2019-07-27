@@ -46,8 +46,9 @@ namespace FigmaSharp.Services
 
         protected IView container;
         protected IFigmaFileProvider fileProvider;
+        internal IFigmaFileProvider FileProvider => fileProvider;
 
-		public T FindViewStartsWith<T>(string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) where T : IView
+        public T FindViewStartsWith<T>(string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) where T : IView
 		{
 			foreach (var node in NodesProcessed)
 			{
@@ -336,10 +337,10 @@ namespace FigmaSharp.Services
 			FigmaNode node = fileProvider.FindByPath(path);
 			if (node == null)
 				return default(T);
-			return (T)ProcessFigmaNodeToView(node, options);
+			return (T)RenderFigmaNode(node, options);
 		}
 
-		public IView ProcessFigmaNodeToView (FigmaNode node, FigmaViewRendererServiceOptions options)
+		public IView RenderFigmaNode (FigmaNode node, FigmaViewRendererServiceOptions options)
 		{
 			ProcessFromNode (node, null, options);
 			var processedNode = FindProcessedNodeById(node.id);
@@ -354,7 +355,7 @@ namespace FigmaSharp.Services
 
 		public T RenderByNode<T>(FigmaNode node, FigmaViewRendererServiceOptions options) where T : IView
 		{
-			return (T)ProcessFigmaNodeToView(node, options);
+			return (T)RenderFigmaNode(node, options);
 		}
 
 		public T RenderByName<T>(string figmaName) where T : IView
@@ -367,7 +368,7 @@ namespace FigmaSharp.Services
             var node = FindNodeByName(figmaName);
             if (node == null)
                 return default (T);
-			return (T)ProcessFigmaNodeToView(node, options);
+			return (T)RenderFigmaNode(node, options);
 		}
 
         void Recursively(ProcessedNode parentNode)
@@ -375,6 +376,12 @@ namespace FigmaSharp.Services
             var children = NodesProcessed.Where(s => s.ParentView == parentNode);
             foreach (var child in children)
             {
+                if (child.View == null)
+                {
+                    Console.WriteLine("Node {0} has no view to process... skipping", child.FigmaNode);
+                    continue;
+                }
+
                 if (child.FigmaNode is IAbsoluteBoundingBox absoluteBounding && parentNode.FigmaNode is IAbsoluteBoundingBox parentAbsoluteBoundingBox)
                 {
                     parentNode.View.AddChild(child.View);
