@@ -1,5 +1,5 @@
 ﻿/* 
- * CustomButtonConverter.cs 
+ * CustomTextFieldConverter.cs
  * 
  * Author:
  *   Jose Medrano <josmed@microsoft.com>
@@ -25,29 +25,28 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+using AppKit;
+using FigmaSharp.NativeControls.Base;
+using System.Linq;
+using System.Text;
+using FigmaSharp.Cocoa;
+using FigmaSharp.Models;
+using LiteForms;
+using LiteForms.Cocoa;
+using FigmaSharp.Services;
 
 namespace FigmaSharp.NativeControls.Cocoa
 {
-	public static class Resources
-	{
-		static FigmaViewConverter[] converters;
+    public class WindowConverter : WindowConverterBase
+    {
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
+        {
+            return null;
+        }
 
-		public static FigmaViewConverter[] GetConverters ()
-		{
-			if (converters == null) {
-				converters = new FigmaViewConverter[]
-				{
-                    new CheckConverter (),
-                    new ComboBoxConverter (),
-                    new PopUpButtonConverter (),
-                    new RadioConverter (),
-					new ButtonConverter (),
-					new TextFieldConverter (),
-                    new WindowConverter ()
-				};
-			}
-
-			return converters;
-		}
-	}
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
+        {
+            return string.Empty;
+        }
+    }
 }

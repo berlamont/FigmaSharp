@@ -25,29 +25,32 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+using FigmaSharp.Models;
 
-namespace FigmaSharp.NativeControls.Cocoa
+namespace FigmaSharp.NativeControls.Base
 {
-	public static class Resources
-	{
-		static FigmaViewConverter[] converters;
-
-		public static FigmaViewConverter[] GetConverters ()
-		{
-			if (converters == null) {
-				converters = new FigmaViewConverter[]
-				{
-                    new CheckConverter (),
-                    new ComboBoxConverter (),
-                    new PopUpButtonConverter (),
-                    new RadioConverter (),
-					new ButtonConverter (),
-					new TextFieldConverter (),
-                    new WindowConverter ()
-				};
-			}
-
-			return converters;
-		}
-	}
+    public abstract class WindowConverterBase : FigmaInstanceConverter
+    {
+        public override bool CanConvert(FigmaNode currentNode)
+        {
+            if (currentNode is FigmaInstance figmaInstance)
+            {
+                if (figmaInstance.name == "Window/Standard")
+                {
+                    return true;
+                }
+                //switch (figmaInstance.ToControlType())
+                //{
+                //    case NativeControlType.ButtonLarge:
+                //    case NativeControlType.ButtonLargeDark:
+                //    case NativeControlType.ButtonStandard:
+                //    case NativeControlType.ButtonStandardDark:
+                //    case NativeControlType.ButtonSmall:
+                //    case NativeControlType.ButtonSmallDark:
+                //        return true;
+                //}
+            }
+            return false;
+        }
+    }
 }
