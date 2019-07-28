@@ -38,13 +38,18 @@ namespace FigmaSharp.Forms.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var elipseView = new LiteForms.Forms.EmptyView();
-            var elipse = (FigmaElipse)currentNode;
-            elipseView.Configure(elipse);
-            return new View(elipseView);
-        }
+			//var currengroupView = new Xamarin.Forms.Image();
+			//currengroupView.Configure((FigmaElipse)currentNode);
+			//return new LiteForms.Forms.ImageView(currengroupView);
 
-        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
+
+			var elipseView = new LiteForms.Forms.EmptyView();
+			var elipse = (FigmaElipse)currentNode;
+			elipseView.Configure(elipse);
+			return new View(elipseView);
+		}
+
+		public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             return string.Empty;
         }

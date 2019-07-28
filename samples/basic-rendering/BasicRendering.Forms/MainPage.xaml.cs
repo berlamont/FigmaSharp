@@ -2,6 +2,8 @@
 using ExampleFigma;
 using FigmaSharp;
 using FigmaSharp.Forms;
+using FigmaSharp.Services;
+using LiteForms;
 using Xamarin.Forms;
 
 namespace BasicRendering.Forms
@@ -11,13 +13,21 @@ namespace BasicRendering.Forms
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        ExampleViewManager exampleViewManager;
+		const string fileName = "NTCS6WenCj7JrvIv5Raeaq";
 
         public MainPage()
         {
             InitializeComponent();
-            var scrollViewWrapper = new LiteForms.Forms.ScrollView(ContainerPanel);
-            exampleViewManager = new ExampleViewManager(scrollViewWrapper);
-        }
+
+			var converters = FigmaSharp.AppContext.Current.GetFigmaConverters();
+			var fileProvider = new FigmaRemoteFileProvider();
+			fileProvider.Load(fileName);
+
+			var renderer = new FigmaViewRendererService(fileProvider, converters);
+
+			var mainScreen = renderer.RenderByPath<IView>(new FigmaViewRendererServiceOptions(), "Log-In Page");
+			BackgroundColor = Xamarin.Forms.Color.Black;
+			Content = mainScreen.NativeObject as AbsoluteLayout;
+		}
     }
 }

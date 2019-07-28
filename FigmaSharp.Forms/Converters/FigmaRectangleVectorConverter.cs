@@ -40,11 +40,9 @@ namespace FigmaSharp.Forms.Converters
 	{
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var rectangleVector = ((RectangleVector)currentNode);
-
             var imageView = new Xamarin.Forms.Image();
             var figmaImageView = new LiteForms.Forms.ImageView(imageView);
-            imageView.Configure(rectangleVector);
+            imageView.Configure((RectangleVector)currentNode);
             return figmaImageView;
         }
 
