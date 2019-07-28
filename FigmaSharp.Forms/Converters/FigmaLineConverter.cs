@@ -30,20 +30,22 @@ using System.Text;
 using FigmaSharp.Converters;
 using Xamarin.Forms;
 using FigmaSharp.Models;
+using LiteForms;
+using FigmaSharp.Services;
 
 namespace FigmaSharp.Forms.Converters
 {
     public class FigmaLineConverter : FigmaLineConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var figmaLineView = new EmptyView(); // { TranslatesAutoresizingMaskIntoConstraints = false };
+            var figmaLineView = new LiteForms.Forms.EmptyView(); // { TranslatesAutoresizingMaskIntoConstraints = false };
             var figmaLine = (FigmaLine)currentNode;
             figmaLineView.Configure(figmaLine);
-            return new ViewWrapper(figmaLineView);
+            return new LiteForms.Forms.View(figmaLineView);
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             StringBuilder builder = new StringBuilder();
             var name = "lineView";

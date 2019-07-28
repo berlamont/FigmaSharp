@@ -29,12 +29,14 @@
 using FigmaSharp.Converters;
 using Xamarin.Forms;
 using FigmaSharp.Models;
+using LiteForms;
+using FigmaSharp.Services;
 
 namespace FigmaSharp.Forms.Converters
 {
     public class FigmaFrameEntityConverter : FigmaFrameEntityConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
             var currengroupView = new AbsoluteLayout
             {
@@ -44,10 +46,10 @@ namespace FigmaSharp.Forms.Converters
 
             var figmaFrameEntity = (FigmaFrameEntity)currentNode;
             currengroupView.Configure(figmaFrameEntity);
-            return new ViewWrapper(currengroupView);
+            return new LiteForms.Forms.View(currengroupView);
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             return string.Empty;
         }

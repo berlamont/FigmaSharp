@@ -4,6 +4,7 @@ using System.Reflection;
 using FigmaSharp.Converters;
 using FigmaSharp.Forms.Converters;
 using FigmaSharp.Models;
+using LiteForms;
 using Xamarin.Forms;
 
 namespace FigmaSharp.Forms
@@ -22,22 +23,22 @@ namespace FigmaSharp.Forms
 
         public bool IsVerticalAxisFlipped => false;
 
-        public IImageWrapper GetImage (string url)
+        public IImage GetImage (string url)
         {
            var image = ImageSource.FromUri (new Uri (url));
-            return new ImageWrapper(image);
+            return new LiteForms.Forms.Image(image);
         }
 
-        public IImageWrapper GetImageFromManifest (Assembly assembly, string imageRef)
+        public IImage GetImageFromManifest (Assembly assembly, string imageRef)
         {
             var assemblyImage = FigmaViewsHelper.GetManifestImageResource(assembly, string.Format("{0}.png", imageRef));
-            return new ImageWrapper (assemblyImage);
+            return new LiteForms.Forms.Image (assemblyImage);
         }
 
-        public IImageWrapper GetImageFromFilePath(string filePath)
+        public IImage GetImageFromFilePath(string filePath)
         {
            var image = ImageSource.FromFile(filePath);
-           return new ImageWrapper(image);
+           return new LiteForms.Forms.Image(image);
         }
 
         public FigmaViewConverter[] GetFigmaConverters() => figmaViewConverters;
@@ -51,12 +52,12 @@ namespace FigmaSharp.Forms
         public FigmaResponse GetFigmaResponseFromContent(string template) =>
             FigmaApiHelper.GetFigmaResponseFromContent(template);
 
-        public IViewWrapper CreateEmptyView() => new ViewWrapper(new AbsoluteLayout());
+        public IView CreateEmptyView() => new LiteForms.Forms.View(new AbsoluteLayout());
 
-        public IImageViewWrapper GetImageView(IImageWrapper image)
+        public IImageView GetImageView(IImage image)
         {
-            var imageView = new ImageViewWrapper(new Image ());
-            imageView.SetImage(image);
+            var imageView = new LiteForms.Forms.ImageView(new Image ());
+			imageView.Image = image;
             return imageView;
         }
 
@@ -67,5 +68,10 @@ namespace FigmaSharp.Forms
 
         public FigmaCodePositionConverterBase GetPositionConverter() => positionConverter;
         public FigmaCodeAddChildConverterBase GetAddChildConverter() => addChildConverter;
-    }
+
+		public string GetSvgData(string url)
+		{
+			return "";
+		}
+	}
 }

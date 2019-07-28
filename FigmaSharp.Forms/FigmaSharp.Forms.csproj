@@ -16,10 +16,16 @@
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Extensions\" />
-    <Folder Include="ViewWrappers\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FigmaSharp\FigmaSharp.csproj">
-    </ProjectReference>
+    <ProjectReference Include="..\external\LiteForms\LiteForms.Forms\LiteForms.Forms.csproj" />
+    <ProjectReference Include="..\external\LiteForms\LiteForms\LiteForms.csproj" />
+    <ProjectReference Include="..\FigmaSharp\FigmaSharp.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ViewWrappers\ImageViewWrapper.cs" />
+    <Compile Remove="ViewWrappers\ViewWrapper.cs" />
+    <Compile Remove="ViewWrappers\ScrollViewWrapper.cs" />
+    <Compile Remove="ViewWrappers\ImageWrapper.cs" />
   </ItemGroup>
 </Project>

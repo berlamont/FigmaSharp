@@ -30,29 +30,32 @@ using System.Text;
 using FigmaSharp.Converters;
 using Xamarin.Forms;
 using FigmaSharp.Models;
+using LiteForms;
+using FigmaSharp.Services;
+using LiteForms.Forms;
 
 namespace FigmaSharp.Forms.Converters
 {
-    public class FigmaRectangleVectorConverter : FigmaRectangleVectorConverterBase
-    {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+    public class FigmaRectangleVectorConverter : RectangleVectorConverterBase
+	{
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var rectangleVector = ((FigmaRectangleVector)currentNode);
+            var rectangleVector = ((RectangleVector)currentNode);
 
-            var imageView = new Image();
-            var figmaImageView = new ImageViewWrapper(imageView);
+            var imageView = new Xamarin.Forms.Image();
+            var figmaImageView = new LiteForms.Forms.ImageView(imageView);
             imageView.Configure(rectangleVector);
             return figmaImageView;
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
-            StringBuilder builder = new StringBuilder();
-            var name = "imageView";
-            builder.AppendLine($"var {name} = new {nameof(Image)}();");
+            //StringBuilder builder = new StringBuilder();
+            //var name = "imageView";
+            //builder.AppendLine($"var {name} = new {nameof(Image)}();");
 
             //builder.Configure(name, (FigmaVectorEntity)currentNode);
-            return builder.ToString();
+            return "";
         }
     }
 }

@@ -28,20 +28,20 @@ namespace FigmaSharp.Forms
             return app_kit_font_weights[select_weight];
         }
 
-        public static Color ToColor(this FigmaColor color)
-        {
-            return new Color(color.r, color.g, color.b, color.a);
-        }
+        //public static Color ToColor(this LiteForms.Color color)
+        //{
+        //    return new Color(color.R, color.G, color.B, color.A);
+        //}
 
-        public static FigmaColor ToFigmaColor(this Color color)
-        {
-            return new FigmaColor() { a = (float)color.A, r = (float)color.R, g = (float)color.G, b = (float)color.B };
-        }
+        //public static LiteForms.Color ToFigmaColor(this Color color)
+        //{
+        //    return new LiteForms.Color() { A = (float)color.A, R = (float)color.R, G = (float)color.G, B = (float)color.B };
+        //}
 
-        public static Rectangle ToCGRect(this FigmaRectangle rectangle)
-        {
-            return new Rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        }
+        //public static Rectangle ToCGRect(this LiteForms.Rectangle rectangle)
+        //{
+        //    return new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+        //}
 
         public static Font ToFont(this FigmaTypeStyle style)
         {
