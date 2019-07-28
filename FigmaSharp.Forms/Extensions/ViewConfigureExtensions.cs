@@ -12,7 +12,7 @@ namespace FigmaSharp.Forms
         {
             Configure(view, (FigmaNode)child);
             view.Opacity = child.opacity;
-			view.BackgroundColor = child.backgroundColor.ToFormsColor();
+			//view.BackgroundColor = child.backgroundColor.ToFormsColor();
         }
 
         public static void Configure(this Xamarin.Forms.View view, FigmaNode child)
@@ -33,11 +33,11 @@ namespace FigmaSharp.Forms
         {
             Configure(view, (FigmaVectorEntity)figmaLine);
 
-            var fills = figmaLine.fills.OfType<FigmaPaint>().FirstOrDefault();
-            if (fills != null)
-            {
-                view.BackgroundColor = fills.color.ToFormsColor();
-            }
+            //var fills = figmaLine.fills.OfType<FigmaPaint>().FirstOrDefault();
+            //if (fills != null)
+            //{
+            //    view.BackgroundColor = fills.color.ToFormsColor();
+            //}
         }
 
         public static void Configure(this Xamarin.Forms.View view, FigmaVectorEntity child)
@@ -49,10 +49,10 @@ namespace FigmaSharp.Forms
         {
             Configure(view, (FigmaVectorEntity)child);
 
-            if (child.HasFills && child.fills[0].color != null)
-            {
-                view.BackgroundColor = child.fills[0].color.ToFormsColor();
-            }
+            //if (child.HasFills && child.fills[0].color != null)
+            //{
+            //    view.BackgroundColor = child.fills[0].color.ToFormsColor();
+            //}
         }
 
         public static void Configure(this Label label, FigmaText text)

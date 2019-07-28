@@ -39,10 +39,9 @@ namespace FigmaSharp.Forms.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var figmaLineView = new LiteForms.Forms.EmptyView(); // { TranslatesAutoresizingMaskIntoConstraints = false };
-            var figmaLine = (FigmaLine)currentNode;
-            figmaLineView.Configure(figmaLine);
-            return new LiteForms.Forms.View(figmaLineView);
+			var currengroupView = new Image();
+			currengroupView.Configure((FigmaLine)currentNode);
+			return new LiteForms.Forms.ImageView(currengroupView);
         }
 
         public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)

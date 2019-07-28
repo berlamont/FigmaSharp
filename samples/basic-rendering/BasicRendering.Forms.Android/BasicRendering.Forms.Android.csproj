@@ -109,6 +109,14 @@
       <Project>{B507FFCC-399C-4FE4-A80A-E590E86021FD}</Project>
       <Name>BasicRendering.Forms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\FigmaSharp.NativeControls\FigmaSharp.NativeControls\FigmaSharp.NativeControls.csproj">
+      <Project>{80D20B03-FF89-47CF-A676-B67B9DE2DAF2}</Project>
+      <Name>FigmaSharp.NativeControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\FigmaSharp.NativeControls\FigmaSharp.NativeControls.Forms\FigmaSharp.NativeControls.Forms.csproj">
+      <Project>{0C0ECA9C-1509-4249-B120-F820CBB37B61}</Project>
+      <Name>FigmaSharp.NativeControls.Forms</Name>
+    </ProjectReference>
   </ItemGroup>
  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
