@@ -16,7 +16,7 @@ namespace BasicRendering.Forms
         public MainPage()
         {
             InitializeComponent();
-            var scrollViewWrapper = new ScrollViewWrapper(ContainerPanel);
+            var scrollViewWrapper = new LiteForms.Forms.ScrollView(ContainerPanel);
             exampleViewManager = new ExampleViewManager(scrollViewWrapper);
         }
     }

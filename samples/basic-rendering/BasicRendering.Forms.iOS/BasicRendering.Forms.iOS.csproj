@@ -128,19 +128,17 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BasicRendering.Forms\BasicRendering.Forms.csproj">
-      <Project>{A7D40952-7EBC-4B5D-8C00-60FE283029A5}</Project>
-      <Name>BasicRendering.Forms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\FigmaSharp\FigmaSharp.csproj">
       <Project>{AD306162-8DAD-4DBD-B264-BDA8765CC107}</Project>
       <Name>FigmaSharp</Name>
-      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
     <ProjectReference Include="..\..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj">
-      <Project>{2E4FA124-6026-4034-9BFC-760E39E08D3B}</Project>
+      <Project>{BBA9C065-23F5-47AB-80D8-CC51CBF3CF93}</Project>
       <Name>FigmaSharp.Forms</Name>
-      <ReferenceSourceTarget></ReferenceSourceTarget>
+    </ProjectReference>
+    <ProjectReference Include="..\BasicRendering.Forms\BasicRendering.Forms.csproj">
+      <Project>{B507FFCC-399C-4FE4-A80A-E590E86021FD}</Project>
+      <Name>BasicRendering.Forms</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
