@@ -12,9 +12,11 @@ namespace BasicRendering.Forms.iOS
         // This is the main entry point of the application.
         static void Main(string[] args)
         {
-            // if you want to use a different Application Delegate class from "AppDelegate"
-            // you can specify it here.
-            UIApplication.Main(args, null, "AppDelegate");
-        }
+			// if you want to use a different Application Delegate class from "AppDelegate"
+			// you can specify it here.
+			UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes { TextColor = UIColor.White });
+			UIApplication.Main(args, null, "AppDelegate");
+		
+		}
     }
 }

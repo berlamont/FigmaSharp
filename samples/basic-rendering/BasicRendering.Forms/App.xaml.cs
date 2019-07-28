@@ -9,9 +9,15 @@ namespace BasicRendering.Forms
             InitializeComponent();
 
             MainPage = new MainPage();
-        }
 
-        protected override void OnStart()
+			//Background color
+			MainPage.SetValue(NavigationPage.BarBackgroundColorProperty, Color.Black);
+
+			//Title color
+			MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.White);
+		}
+
+		protected override void OnStart()
         {
             // Handle when your app starts
         }
