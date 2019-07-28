@@ -21,7 +21,7 @@ namespace LocalFile.Forms
         {
             InitializeComponent();
 
-            var scrollViewWrapper = new ScrollViewWrapper(ContainerPanel);
+            var scrollViewWrapper = new LiteForms.Forms.ScrollView(ContainerPanel);
             var converters = FigmaSharp.AppContext.Current.GetFigmaConverters();
             var storyboard = new FigmaStoryboard(converters);
             documentExample = new DocumentExample(scrollViewWrapper, storyboard);
