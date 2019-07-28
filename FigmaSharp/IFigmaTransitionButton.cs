@@ -26,16 +26,14 @@
 
 using LiteForms;
 
-namespace LocalFile
+namespace FigmaSharp
 {
-	public interface IFigmaTransitionButton : IButton
+	public interface ITransitableButton : IButton, IViewTransitable
 	{
-		string TransitionNodeID { get; set; }
-		float TransitionDuration { get; set; }
-		string TransitionEasing { get; set; }
+
 	}
 
-	public interface IFigmaTransitionImageButton : IImageButton
+	public interface IViewTransitable
 	{
 		string TransitionNodeID { get; set; }
 		float TransitionDuration { get; set; }

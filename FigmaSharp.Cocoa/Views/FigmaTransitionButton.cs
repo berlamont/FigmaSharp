@@ -26,9 +26,9 @@
 
 using LiteForms.Cocoa;
 
-namespace LocalFile.Cocoa
+namespace FigmaSharp.Cocoa
 {
-	public class FigmaTransitionImageButton : ImageButton, IFigmaTransitionImageButton
+	public class FigmaTransitionImageButton : ImageButton, ITransitableButton
 	{
 		public string TransitionNodeID { get; set; }
 		public float TransitionDuration { get; set; }
@@ -43,7 +43,7 @@ namespace LocalFile.Cocoa
 		}
 	}
 
-	public class FigmaTransitionButton : Button, IFigmaTransitionButton
+	public class FigmaTransitionButton : Button, IViewTransitable, ITransitableButton
 	{
 		public string TransitionNodeID { get; set; }
 		public float TransitionDuration { get; set; }

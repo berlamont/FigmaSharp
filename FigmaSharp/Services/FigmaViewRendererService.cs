@@ -72,6 +72,18 @@ namespace FigmaSharp.Services
             return default(T);
         }
 
+		public T FindViewByPath<T>(params string[] path) where T : IView
+		{
+			var node = fileProvider.FindByPath(path);
+			if (node == null)
+				return default(T);
+			var processed = NodesProcessed.FirstOrDefault(s => s.FigmaNode == node);
+			if (processed == null)
+				return default(T);
+
+			return (T) processed.View;
+		}
+
 		public IEnumerable<T> FindViewsStartsWith<T>(string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
 		{
 			foreach (var node in NodesProcessed)

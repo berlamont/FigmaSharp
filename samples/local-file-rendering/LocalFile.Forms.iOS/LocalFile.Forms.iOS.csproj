@@ -154,7 +154,7 @@
       <Name>FigmaSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj">
-      <Project>{BBA9C065-23F5-47AB-80D8-CC51CBF3CF93}</Project>
+      <Project>{2E4FA124-6026-4034-9BFC-760E39E08D3B}</Project>
       <Name>FigmaSharp.Forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\external\LiteForms\LiteForms\LiteForms.csproj">

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FigmaSharp.Models;
 using Xamarin.Forms;
 
@@ -6,6 +7,34 @@ namespace FigmaSharp.Forms
 {
     public static class FigmaExtensions
     {
+		public static View FindNativeViewByName(this Services.FigmaRendererService rendererService, string name)
+		{
+			foreach (var node in rendererService.NodesProcessed)
+			{
+				if (node.FigmaNode.name == name)
+				{
+					return (View)node.View.NativeObject;
+				}
+			}
+			return null;
+		}
+
+		public static Xamarin.Forms.Color MixOpacity(this Xamarin.Forms.Color color, float opacity)
+        {
+            return new Xamarin.Forms.Color (
+                color.R, color.G, color.B,
+                 Math.Min(color.A, opacity)
+            );
+        }
+
+        public static LiteForms.Color MixOpacity(this LiteForms.Color color, float opacity)
+        {
+            return new LiteForms.Color(
+                color.R, color.G, color.B,
+                 Math.Min(color.A, opacity)
+            );
+        }
+
         static int[] app_kit_font_weights = {
             2,   // FontWeight100
       3,   // FontWeight200
@@ -59,18 +88,18 @@ namespace FigmaSharp.Forms
                 Console.WriteLine("FONT: {0} - {1}", family, style.fontPostScriptName);
             }
 
-            var font = Font.SystemFontOfSize(style.fontSize);
+            Font font;
             //var font =  FromName (family, style.fontSize);
             //var w = ToAppKitFontWeight(style.fontWeight);
             //NSFontTraitMask traits = default(NSFontTraitMask);
-            //if (style.fontPostScriptName != null && style.fontPostScriptName.EndsWith("-Bold"))
-            //{
-            //    traits = NSFontTraitMask.Bold;
-            //}
-            //else
-            //{
-
-            //}
+            if (style.fontPostScriptName?.EndsWith("-Bold") ?? false)
+            {
+                font = Font.SystemFontOfSize(style.fontSize, FontAttributes.Bold);
+            }
+            else
+            {
+                font = Font.SystemFontOfSize(style.fontSize);
+            }
             //if (font != null)
             //{
             //    var w = NSFontManager.SharedFontManager.WeightOfFont(font);

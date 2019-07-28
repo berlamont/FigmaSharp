@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\LiteForms\LiteForms.Forms\LiteForms.Forms.csproj" />

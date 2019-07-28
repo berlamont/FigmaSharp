@@ -8,7 +8,12 @@ namespace FigmaSharp
 {
     public static class Extensions
     {
-        public static void RenderInWindow(this FigmaViewRendererService sender, IWindow mainWindow, FigmaViewRendererServiceOptions options, params string[] path)
+		public static void RenderInWindow(this FigmaViewRendererService sender, IWindow mainWindow,  params string[] path)
+		{
+			RenderInWindow(sender, mainWindow, new FigmaViewRendererServiceOptions(), path);
+		}
+
+		public static void RenderInWindow(this FigmaViewRendererService sender, IWindow mainWindow, FigmaViewRendererServiceOptions options, params string[] path)
         {
             var contentPath = path.Concat(new[] { "content" }).ToArray();
 

@@ -22,5 +22,12 @@
     <ProjectReference Include="..\..\..\FigmaSharp.NativeControls\FigmaSharp.NativeControls.Forms\FigmaSharp.NativeControls.Forms.csproj" />
     <ProjectReference Include="..\..\..\FigmaSharp.NativeControls\FigmaSharp.NativeControls\FigmaSharp.NativeControls.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Converters\" />
+    <Folder Include="Converters\LoginScreen\" />
+    <Folder Include="Converters\MenuScreen\" />
+    <Folder Include="Converters\HomeScreen\" />
+    <Folder Include="Converters\ExhibitionScreen\" />
+  </ItemGroup>
   <Import Project="..\BasicRendering.Shared\BasicRendering.Shared.projitems" Label="Shared" Condition="Exists('..\BasicRendering.Shared\BasicRendering.Shared.projitems')" />
 </Project>

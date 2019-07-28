@@ -59,6 +59,7 @@
     <Compile Include="Converters\FigmaCodePositionConverter.cs" />
     <Compile Include="Converters\FigmaCodeAddChildConverter.cs" />
     <Compile Include="Converters\FigmaRegularPolygonConverter.cs" />
+    <Compile Include="Views\FigmaTransitionButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FigmaSharp\FigmaSharp.csproj">
@@ -85,6 +86,7 @@
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Views\" />
   </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
