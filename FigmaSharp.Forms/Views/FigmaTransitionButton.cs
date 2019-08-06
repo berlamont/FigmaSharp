@@ -1,6 +1,4 @@
 ﻿/* 
- * FigmaElipseConverter.cs 
- * 
  * Author:
  *   Jose Medrano <josmed@microsoft.com>
  *
@@ -26,30 +24,39 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-using FigmaSharp.Converters;
-using FigmaSharp.Models;
-using FigmaSharp.Services;
-using LiteForms;
+
 using LiteForms.Forms;
 
-namespace FigmaSharp.Forms.Converters
+namespace FigmaSharp.Forms
 {
-    public class FigmaElipseConverter : FigmaElipseConverterBase
-    {
-        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
-        {
-			//var currengroupView = new Xamarin.Forms.Image();
-			//currengroupView.Configure((FigmaElipse)currentNode);
-			//return new LiteForms.Forms.ImageView(currengroupView);
-			var elipseView = new LiteForms.Forms.EmptyView();
-			var elipse = (FigmaElipse)currentNode;
-			elipseView.Configure(elipse);
-			return new View(elipseView);
+	public class FigmaTransitionImageButton : ImageButton, ITransitableButton
+	{
+		public string TransitionNodeID { get; set; }
+		public float TransitionDuration { get; set; }
+		public string TransitionEasing { get; set; }
+
+		public FigmaTransitionImageButton()
+		{
 		}
 
-		public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
-        {
-            return string.Empty;
-        }
-    }
+		public FigmaTransitionImageButton(Xamarin.Forms.Button button) : base(button)
+		{
+		}
+	}
+
+	public class FigmaTransitionButton : Button, ITransitableButton
+	{
+		public string TransitionNodeID { get; set; }
+		public float TransitionDuration { get; set; }
+		public string TransitionEasing { get; set; }
+
+		public FigmaTransitionButton()
+		{
+		}
+
+		public FigmaTransitionButton(Xamarin.Forms.Button button) : base(button)
+		{
+		}
+	}
 }
+

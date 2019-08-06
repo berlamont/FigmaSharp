@@ -1,4 +1,5 @@
 ﻿using Xamarin.Forms;
+using LiteForms.Forms;
 
 namespace BasicRendering.Forms
 {
@@ -9,12 +10,6 @@ namespace BasicRendering.Forms
             InitializeComponent();
 
             MainPage = new MainPage();
-
-			//Background color
-			MainPage.SetValue(NavigationPage.BarBackgroundColorProperty, Color.Black);
-
-			//Title color
-			MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.White);
 		}
 
 		protected override void OnStart()

@@ -12,7 +12,8 @@ namespace FigmaSharp.Forms
         {
             Configure(view, (FigmaNode)child);
             view.Opacity = child.opacity;
-			//view.BackgroundColor = child.backgroundColor.ToFormsColor();
+            view.BackgroundColor = child.backgroundColor.
+                MixOpacity(child.opacity).ToFormsColor();
         }
 
         public static void Configure(this Xamarin.Forms.View view, FigmaNode child)
@@ -63,12 +64,8 @@ namespace FigmaSharp.Forms
             label.Opacity = text.opacity;
             label.VerticalTextAlignment = text.style.textAlignVertical == "CENTER" ? TextAlignment.Center : text.style.textAlignHorizontal == "TOP" ? TextAlignment.Start : TextAlignment.End;
 
-            var fills = text.fills.FirstOrDefault();
-            if (fills != null)
-            {
-				label.TextColor = fills.color.ToFormsColor();
-
-			}
+            if (text.HasFills)
+                label.TextColor = text.fills[0].color.ToFormsColor();
         }
     }
 }

@@ -42,29 +42,30 @@ using LocalFile.Shared;
 namespace LocalFile.Cocoa
 {
 	static class MainClass
-    {
+	{
 		static IWindow mainWindow;
 		static FigmaRemoteFileProvider fileProvider;
 
 		static void Main(string[] args)
-        {
+		{
 			FigmaApplication.Init(Environment.GetEnvironmentVariable("TOKEN"));
 
-            NSApplication.Init();
-            NSApplication.SharedApplication.ActivationPolicy = NSApplicationActivationPolicy.Regular;
+			NSApplication.Init();
+			NSApplication.SharedApplication.ActivationPolicy = NSApplicationActivationPolicy.Regular;
 
-			mainWindow = new Window(new Rectangle(0, 0, 300, 368)) {
+			mainWindow = new Window(new Rectangle(0, 0, 300, 368))
+			{
 				Title = "Cocoa Figma Local File Sample",
 			};
 
 			Example1();
 			//Example2();
 
-			mainWindow.Show ();
+			mainWindow.Show();
 
-            NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
-            NSApplication.SharedApplication.Run();
-        }
+			NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+			NSApplication.SharedApplication.Run();
+		}
 
 		static void SetContentDialog(IView screen)
 		{
@@ -84,33 +85,37 @@ namespace LocalFile.Cocoa
 		{
 			const string fileName = "EGTUYgwUC9rpHmm4kJwZQXq4";
 
-            var converters = Resources.GetConverters()
+			var converters = Resources.GetConverters()
 			.Union(FigmaSharp.AppContext.Current.GetFigmaConverters())
 			.ToArray();
 
 			fileProvider = new FigmaRemoteFileProvider();
-            fileProvider.Load(fileName);
+			fileProvider.Load(fileName);
 
-            var rendererService = new FigmaViewRendererService (fileProvider, converters);
+			var rendererService = new FigmaViewRendererService(fileProvider, converters);
 			var rendererOptions = new FigmaViewRendererServiceOptions() { ScanChildrenFromFigmaInstances = false };
-            rendererService.RenderInWindow(mainWindow, rendererOptions, "1.0. Bundle Figma Document");
+			rendererService.RenderInWindow(mainWindow, rendererOptions, "1.0. Bundle Figma Document");
 
-            mainWindow.Resizable = false;
-            mainWindow.Center();
+			mainWindow.Resizable = false;
+			mainWindow.Center();
 
-            var urlTextField = rendererService.FindViewByName<TextBox>("FigmaUrlTextField");
+			var urlTextField = rendererService.FindViewByName<TextBox>("FigmaUrlTextField");
 			var bundleButton = rendererService.FindViewByName<Button>("BundleButton");
 			var cancelButton = rendererService.FindViewByName<Button>("CancelButton");
 
-			if (cancelButton != null) {
-				cancelButton.Clicked += (s, e) => {
+			if (cancelButton != null)
+			{
+				cancelButton.Clicked += (s, e) =>
+				{
 					if (urlTextField != null)
 						urlTextField.Text = "You pressed cancel";
 				};
 			}
 
-			if (bundleButton != null) {
-				bundleButton.Clicked += (s, e) => {
+			if (bundleButton != null)
+			{
+				bundleButton.Clicked += (s, e) =>
+				{
 					if (urlTextField != null)
 						urlTextField.Text = "You pressed bundle";
 				};
@@ -119,7 +124,7 @@ namespace LocalFile.Cocoa
 			//We want know the background color of the figma camvas and apply to our scrollview
 			var canvas = fileProvider.Nodes.OfType<FigmaCanvas>().FirstOrDefault();
 			if (canvas != null)
-                mainWindow.BackgroundColor = canvas.backgroundColor;
+				mainWindow.BackgroundColor = canvas.backgroundColor;
 		}
 
 		#endregion
@@ -171,7 +176,7 @@ namespace LocalFile.Cocoa
 
 			var loadingSpinnerConverter = new LoadingSpinnerConverter();
 			rendererService.CustomConverters.Add(loadingSpinnerConverter);
-		
+
 			var loadingDialogFigmaNode = rendererService.FindNodeByName(LoadingDialog);
 			var loadingDialog = rendererService.RenderByName<IView>(LoadingDialog, options);
 
@@ -186,7 +191,8 @@ namespace LocalFile.Cocoa
 			spinnerView.Start();
 
 			//we wait for 5 seconds and we show next screen
-			await Task.Run(() => {
+			await Task.Run(() =>
+			{
 				if (loadingDialogFigmaNode is FigmaFrameEntity figmaFrameEntity)
 				{
 					Thread.Sleep((int)figmaFrameEntity.transitionDuration);
@@ -223,11 +229,12 @@ namespace LocalFile.Cocoa
 				.OfType<IImageButton>()
 				.FirstOrDefault();
 
-			closeButton.Clicked += (s, e) => {
+			closeButton.Clicked += (s, e) =>
+			{
 				NSRunningApplication.CurrentApplication.Terminate();
 			};
 		}
-	
+
 		static void LoadLoginDialog(FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
 		{
 			mainWindow.Size = new Size(720, 467);
@@ -251,13 +258,15 @@ namespace LocalFile.Cocoa
 			//logic
 			var signInButton = rendererService.FindViewByName<IButton>(SignInMicrosoftButtonConverter.SignInMicrosoftButtonName);
 			signInButton.Focus();
-			signInButton.Clicked += (s, e) => {
+			signInButton.Clicked += (s, e) =>
+			{
 				if (signInButton is IFigmaTransitionButton figmaTransition)
 					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
 			};
 
 			var doThisLaterButton = rendererService.FindViewByName<IButton>(DoThisLaterButtonConverter.DoThisLaterButtonName);
-			doThisLaterButton.Clicked += (s, e) => {
+			doThisLaterButton.Clicked += (s, e) =>
+			{
 				if (doThisLaterButton is IFigmaTransitionButton figmaTransition)
 					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
 			};
@@ -265,7 +274,7 @@ namespace LocalFile.Cocoa
 
 		static void ProcessTransitionNodeID(string transitionNodeId, FigmaViewRendererService rendererService, FigmaViewRendererServiceOptions options)
 		{
-			if (string.IsNullOrEmpty (transitionNodeId))
+			if (string.IsNullOrEmpty(transitionNodeId))
 			{
 				return;
 			}
@@ -286,7 +295,8 @@ namespace LocalFile.Cocoa
 			else if (node.name == LoadingDialog)
 			{
 				LoadLoadingDialog(rendererService, options);
-			} else
+			}
+			else
 			{
 				var selectedNode = rendererService.FindNodeById(transitionNodeId);
 				var storyboardRedered = rendererService.RenderByNode<IView>(selectedNode);
@@ -318,7 +328,8 @@ namespace LocalFile.Cocoa
 				.OfType<IImageButton>()
 				.FirstOrDefault();
 
-			closeButton.Clicked += (s, e) => {
+			closeButton.Clicked += (s, e) =>
+			{
 				if (closeButton is IFigmaTransitionImageButton figmaTransition)
 					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
 			};

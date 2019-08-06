@@ -38,11 +38,15 @@ namespace FigmaSharp.Forms.Converters
     {
         public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-			var currengroupView = new AbsoluteLayout { Margin = 0, Padding = 0 };
-			var figmaFrameEntity = (FigmaFrameEntity)currentNode;
-			currengroupView.Configure(figmaFrameEntity);
-			return new LiteForms.Forms.View(currengroupView);
-		}
+            //var imageView = new Xamarin.Forms.Image();
+            //var figmaImageView = new LiteForms.Forms.ImageView(imageView);
+            //imageView.Configure((FigmaFrameEntity)currentNode);
+            //return figmaImageView;
+            var currengroupView = new AbsoluteLayout { Margin = 0, Padding = 0 };
+            var figmaFrameEntity = (FigmaFrameEntity)currentNode;
+            currengroupView.Configure(figmaFrameEntity);
+            return new LiteForms.Forms.View(currengroupView);
+        }
 
         public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {

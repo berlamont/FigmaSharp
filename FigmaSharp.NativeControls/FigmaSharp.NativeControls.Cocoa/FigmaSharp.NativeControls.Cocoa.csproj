@@ -61,7 +61,6 @@
     <Compile Include="Converters\PopUpButtonConverter.cs" />
     <Compile Include="Converters\RadioConverter.cs" />
     <Compile Include="Converters\TextFieldConverter.cs" />
-    <Compile Include="Views\FigmaTransitionButton.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Converters\WindowConverter.cs" />
   </ItemGroup>
@@ -94,7 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
-    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
