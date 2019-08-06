@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>FigmaSharp.Cocoa</id>
+    <title>FigmaSharp.Cocoa</title>
+    <version>0.5.0-alpha</version>
+    <authors>Jose Medrano</authors>
+    <licenseUrl>https://www.microsoft.com/es-es/</licenseUrl>
+    <projectUrl>https://www.microsoft.com/es-es/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/netonjm/FigmaSharp/master/icons/image-logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Say hello to #FigmaSharp and enhance your .NET applications taking advantage of Figma's component system creating beautiful views in your application!</description>
+	 <releaseNotes>https://www.microsoft.com/es-es/</releaseNotes>
+    <copyright>Jose Medrano.</copyright>
+    <tags>figma designer design</tags>
+    <dependencies>
+      <dependency id="FigmaSharp.Forms" version="0.5.0-alpha" />
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="FigmaSharp.Cocoa\bin\Release\*.dll" target="lib/net472" />
+  </files>
+
+</package>
