@@ -5,110 +5,155 @@ using FigmaSharp.Models;
 using FigmaSharp.Services;
 using LiteForms.Forms;
 using System.Linq;
+using System.Reflection;
 
 namespace Xamarin.Forms
 {
-    public class FigmaContentPage : ContentPage
+    public class FigmaRemoteContentPage : FigmaContentPage
+    {
+        public override void InitializeFigmaComponent()
+        {
+            InternalInitializeComponent();
+            FileProvider = new FigmaRemoteFileProvider();
+            RendererService = new FigmaViewRendererService(FileProvider, GetFigmaViewConverters ());
+        }
+
+        protected override FigmaViewConverter[] GetFigmaViewConverters()
+        {
+            var converters = FigmaSharp.AppContext.Current.GetFigmaConverters();
+            return converters;
+        }
+    }
+
+    public class FigmaAssemblyResourceContentPage : FigmaContentPage
+    {
+        public override void InitializeFigmaComponent()
+        {
+            InternalInitializeComponent();
+            FileProvider = new FigmaManifestFileProvider(Assembly.GetCallingAssembly ());
+            RendererService = new FigmaViewRendererService(FileProvider, GetFigmaViewConverters());
+        }
+
+        protected override FigmaViewConverter[] GetFigmaViewConverters()
+        {
+            var converters = FigmaSharp.AppContext.Current.GetFigmaConverters();
+            return converters;
+        }
+    }
+
+    public class FigmaLocalContentPage : FigmaContentPage
+    {
+        public override void InitializeFigmaComponent()
+        {
+            InternalInitializeComponent();
+            FileProvider = new FigmaLocalFileProvider("Resources");
+            RendererService = new FigmaViewRendererService(FileProvider, GetFigmaViewConverters());
+        }
+
+        protected override FigmaViewConverter[] GetFigmaViewConverters()
+        {
+            var converters = FigmaSharp.AppContext.Current.GetFigmaConverters();
+            return converters;
+        }
+    }
+
+    public abstract class FigmaContentPage : ContentPage
     {
         public string FileName { get; private set; }
 
-        protected FigmaRemoteFileProvider FileProvider { get; private set; }
+        protected FigmaFileProvider FileProvider { get; set; }
 
-        protected FigmaViewRendererService RendererService { get; private set; }
+        protected FigmaViewRendererService RendererService { get; set; }
 
         protected List<FigmaViewConverter> Converters => RendererService.CustomConverters;
 
-		public string StartNodeID
-		{
-			get
-			{
-				return FileProvider.Nodes.OfType<FigmaCanvas>().FirstOrDefault()?.prototypeStartNodeID;
-			}
-		}
-
-		public void LoadDocument (string fileName)
+        LiteForms.IView contentView;
+        public LiteForms.IView ContentView
         {
-			FileName = fileName;
-			FileProvider.Load(fileName);
+            get => contentView;
+            set
+            {
+                contentView = value;
+                Content = contentView.NativeObject as AbsoluteLayout;
+            }
         }
 
-		public void AddConverter (params FigmaViewConverter[] converters)
-		{
-			RendererService.CustomConverters.AddRange(converters);
-		}
+        public string StartNodeID => FileProvider.Nodes.OfType<FigmaCanvas>().FirstOrDefault()?.prototypeStartNodeID;
 
-		public void RemoveConverter(params FigmaViewConverter[] converters)
-		{
-			foreach (var item in converters)
-			{
-				RendererService.CustomConverters.Remove(item);
-			}
-		}
-
-		public FigmaContentPage()
+        public void LoadDocument(string fileName)
         {
-            FileProvider = new FigmaRemoteFileProvider();
-            var converters = FigmaSharp.AppContext.Current.GetFigmaConverters();
-            RendererService = new FigmaViewRendererService(FileProvider, converters);
+            FileName = fileName;
+            FileProvider.Load(fileName);
         }
 
-		public T FindNativeViewByName<T>(string name) where T : Xamarin.Forms.View
-		{
-			 return RendererService.FindNativeViewByName <T>(name);
-		}
+        public void AddConverter(params FigmaViewConverter[] converters)
+        {
+            RendererService.CustomConverters.AddRange(converters);
+        }
 
-		public void RenderByPath<T>(params string[] path) where T : LiteForms.IView
-		{
-			RenderByPath<T>(new FigmaViewRendererServiceOptions(), path);
-		}
+        public void RemoveConverter(params FigmaViewConverter[] converters)
+        {
+            foreach (var item in converters)
+                RendererService.CustomConverters.Remove(item);
+        }
+      
+        public abstract void InitializeFigmaComponent();
+        protected abstract FigmaViewConverter[] GetFigmaViewConverters();
 
-		public void RenderByPath<T>(FigmaViewRendererServiceOptions options, params string[] path) where T : LiteForms.IView
-		{
-			var mainScreen = RendererService.RenderByPath<LiteForms.IView>(new FigmaViewRendererServiceOptions(), path);
-			ContentView = mainScreen;
-		}
+        protected void InternalInitializeComponent()
+        {
+            try
+            {
+                GetType().GetMethod("InitializeComponent", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(this, null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
 
-		LiteForms.IView contentView;
-		public LiteForms.IView ContentView {
-			get => contentView;
-			set
-			{
-				contentView = value;
-				Content = contentView.NativeObject as AbsoluteLayout;
-			}
-		}
+        public T FindNativeViewByName<T>(string name) where T : Xamarin.Forms.View
+        {
+            return RendererService.FindNativeViewByName<T>(name);
+        }
 
-		public void RenderByName<T>(string name, FigmaViewRendererServiceOptions options) where T : LiteForms.IView
-		{
-			var mainScreen = RendererService.RenderByName<LiteForms.IView>(name, new FigmaViewRendererServiceOptions());
-			ContentView = mainScreen;
-		}
+        public void RenderByPath(params string[] path) =>
+            RenderByPath(new FigmaViewRendererServiceOptions(), path);
 
-		public void RenderByName<T>(string name) where T : LiteForms.IView
-		{
-			RenderByName<T> (name, new FigmaViewRendererServiceOptions());
-		}
+        public void RenderByPath(FigmaViewRendererServiceOptions options, params string[] path)
+        {
+            var mainScreen = RendererService.RenderByPath<LiteForms.IView>(options, path);
+            ContentView = mainScreen;
+        }
 
-		public void RenderByNode<T>(FigmaNode node, FigmaViewRendererServiceOptions options) where T : LiteForms.IView
-		{
-			var mainScreen = RendererService.RenderByNode<LiteForms.IView>(node, new FigmaViewRendererServiceOptions());
-			ContentView = mainScreen;
-		}
+        public void RenderByName(string name, FigmaViewRendererServiceOptions options)
+        {
+            var mainScreen = RendererService.RenderByName<LiteForms.IView>(name, options);
+            if (mainScreen == null) return;
+            ContentView = mainScreen;
+        }
 
-		public void RenderByNode<T>(FigmaNode node) where T : LiteForms.IView
-		{
-			RenderByNode<T>(node, new FigmaViewRendererServiceOptions());
-		}
+        public void RenderByName(string name) =>
+            RenderByName(name, new FigmaViewRendererServiceOptions());
 
-		public void RenderByNodeId<T>(string nodeId, FigmaViewRendererServiceOptions options) where T : LiteForms.IView
-		{
-			var selectedNode = RendererService.FindNodeById(nodeId);
-			RenderByNode<T>(selectedNode, options);
-		}
+        public void RenderByNode(FigmaNode node, FigmaViewRendererServiceOptions options)
+        {
+            var mainScreen = RendererService.RenderByNode<LiteForms.IView>(node, options);
+            if (mainScreen == null) return;
+            ContentView = mainScreen;
+        }
 
-		public void RenderByNodeId <T>(string nodeId) where T : LiteForms.IView
-		{
-			RenderByNodeId<T>(nodeId, new FigmaViewRendererServiceOptions());
-		}
-	}
+        public void RenderByNode(FigmaNode node) =>
+            RenderByNode(node, new FigmaViewRendererServiceOptions());
+
+        public void RenderByNodeId(string nodeId, FigmaViewRendererServiceOptions options)
+        {
+            var selectedNode = RendererService.FindNodeById(nodeId);
+            if (selectedNode == null) return;
+            RenderByNode(selectedNode, options);
+        }
+
+        public void RenderByNodeId(string nodeId) =>
+            RenderByNodeId(nodeId, new FigmaViewRendererServiceOptions());
+    }
 }

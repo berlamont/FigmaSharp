@@ -14,7 +14,7 @@ namespace BasicRendering.Forms
     // Learn more about making custom code visible in the Xamarin.Forms previewer
     // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(false)]
-    public partial class MainPage : FigmaContentPage
+    public partial class MainPage : FigmaRemoteContentPage
     {
 		const string LoginPage = "Log-In Page";
 		const string ExhibitionPage = "Exhibition";
@@ -23,8 +23,7 @@ namespace BasicRendering.Forms
 
 		public MainPage()
         {
-            InitializeComponent();
-
+            InitializeFigmaComponent ();
 			LoadDocument("fKugSkFGdwOF4vDsPGnJee");
 
 			//this converters are reused in all the renderings
@@ -58,7 +57,7 @@ namespace BasicRendering.Forms
 			else
 			{
 				BackgroundColor = Xamarin.Forms.Color.White;
-				RenderByNode<IView>(node);
+				RenderByNode (node);
 				ProcessAllTransitableButtons(ContentView);
 			}
 		}
@@ -67,7 +66,7 @@ namespace BasicRendering.Forms
 		{
 			if (converters != null && converters.Length > 0)
 				AddConverter(converters);
-			RenderByNode<IView>(node);
+			RenderByNode (node);
 			if (converters != null && converters.Length > 0)
 				RemoveConverter(converters);
 		}

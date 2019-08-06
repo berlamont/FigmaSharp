@@ -126,6 +126,9 @@
   <ItemGroup>
      <PackageReference Include="Xamarin.Forms" Version="4.0.0.394984-pre10" />
     <PackageReference Include="Xamarin.Essentials" Version="1.0.1" />
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.1</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\101-13.png" />
@@ -154,7 +157,7 @@
       <Name>FigmaSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj">
-      <Project>{2E4FA124-6026-4034-9BFC-760E39E08D3B}</Project>
+      <Project>{BBA9C065-23F5-47AB-80D8-CC51CBF3CF93}</Project>
       <Name>FigmaSharp.Forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\external\LiteForms\LiteForms\LiteForms.csproj">
@@ -166,7 +169,6 @@
       <Name>LiteForms.Forms</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\LocalFile.Shared\LocalFile.Shared.projitems" Label="Shared" Condition="Exists('..\LocalFile.Shared\LocalFile.Shared.projitems')" />
   <Import Project="..\LocalFile.Forms\LocalFile.Forms.projitems" Label="Shared" Condition="Exists('..\LocalFile.Forms\LocalFile.Forms.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
