@@ -37,7 +37,6 @@ using FigmaSharp.NativeControls.Cocoa;
 using FigmaSharp.Services;
 using LiteForms;
 using LiteForms.Cocoa;
-using LocalFile.Shared;
 
 namespace LocalFile.Cocoa
 {
@@ -260,14 +259,14 @@ namespace LocalFile.Cocoa
 			signInButton.Focus();
 			signInButton.Clicked += (s, e) =>
 			{
-				if (signInButton is IFigmaTransitionButton figmaTransition)
+				if (signInButton is IViewTransitable figmaTransition)
 					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
 			};
 
 			var doThisLaterButton = rendererService.FindViewByName<IButton>(DoThisLaterButtonConverter.DoThisLaterButtonName);
 			doThisLaterButton.Clicked += (s, e) =>
 			{
-				if (doThisLaterButton is IFigmaTransitionButton figmaTransition)
+				if (doThisLaterButton is IViewTransitable figmaTransition)
 					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
 			};
 		}
@@ -330,7 +329,7 @@ namespace LocalFile.Cocoa
 
 			closeButton.Clicked += (s, e) =>
 			{
-				if (closeButton is IFigmaTransitionImageButton figmaTransition)
+				if (closeButton is IViewTransitable figmaTransition)
 					ProcessTransitionNodeID(figmaTransition.TransitionNodeID, rendererService, options);
 			};
 		}

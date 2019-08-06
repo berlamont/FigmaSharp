@@ -4,10 +4,12 @@ using FigmaSharp.Forms;
 using LiteForms.Forms;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
+using System;
 
 [assembly: ExportRenderer(typeof(ExtendedButton), typeof(ExtendedButtonRenderer))]
 namespace LiteForms.Forms
 {
+	[Obsolete ("This should be updated")]
 	public class ExtendedButtonRenderer : Xamarin.Forms.Platform.Android.ButtonRenderer
 	{
 		public new ExtendedButton Element
@@ -42,17 +44,14 @@ namespace LiteForms.Forms
 
 		public void SetTextAlignment()
 		{
-			Control.Gravity = AlignmentHelper.ToHorizontalGravityFlags(Element.HorizontalTextAlignment);
+			Control.Gravity = ToHorizontalGravityFlags(Element.HorizontalTextAlignment);
 		}
 
-		public static class AlignmentHelper
+		public GravityFlags ToHorizontalGravityFlags(Xamarin.Forms.TextAlignment alignment)
 		{
-			public static GravityFlags ToHorizontalGravityFlags(this Xamarin.Forms.TextAlignment alignment)
-			{
-				if (alignment == Xamarin.Forms.TextAlignment.Center)
-					return GravityFlags.AxisSpecified;
-				return alignment == Xamarin.Forms.TextAlignment.End ? GravityFlags.Right : GravityFlags.Left;
-			}
+			if (alignment == Xamarin.Forms.TextAlignment.Center)
+				return GravityFlags.AxisSpecified;
+			return alignment == Xamarin.Forms.TextAlignment.End ? GravityFlags.Right : GravityFlags.Left;
 		}
 	}
 }
