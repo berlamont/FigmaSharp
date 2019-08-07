@@ -14,7 +14,10 @@
     <copyright>Jose Medrano.</copyright>
     <tags>figma designer design</tags>
     <dependencies>
-      <dependency id="FigmaSharp.Forms" version="0.5.0-alpha" />
+      <dependency id="FigmaSharp" version="0.5.0-alpha" />
+      <dependency id="LiteForms.Cocoa" version="0.1.5" />
+      <dependency id="Newtonsoft.Json" version="12.0.1" />
+      <dependency id="System.Drawing.Common" version="4.5.1" /> 
     </dependencies>
   </metadata>
 
