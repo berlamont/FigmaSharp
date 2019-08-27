@@ -64,18 +64,12 @@
                                                 <segue destination="WaF-y5-496" kind="show" id="3Db-uC-Tfc"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Open Recent" id="YD0-ex-AWB">
+                                        <menuItem isSeparatorItem="YES" id="25E-n1-40q"/>
+                                        <menuItem title="Clear Recents" id="OLG-qV-uYT" userLabel="Clear Recents">
                                             <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Open Recent" systemMenu="recentDocuments" id="AVo-yW-pAF">
-                                                <items>
-                                                    <menuItem title="Clear Menu" id="7b3-jo-UV1">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="clearRecentDocuments:" target="Ady-hI-5gd" id="aEg-oh-8at"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
+                                            <connections>
+                                                <action selector="ClearRecentsClicked:" target="Voe-Tx-rLC" id="0zC-c0-ozb"/>
+                                            </connections>
                                         </menuItem>
                                     </items>
                                 </menu>
@@ -317,12 +311,6 @@
                                                 <action selector="arrangeInFront:" target="Ady-hI-5gd" id="KLn-yS-4Zy"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="PoJ-mm-DaV"/>
-                                        <menuItem title="Layer Browser" enabled="NO" keyEquivalent="1" id="ZVz-FL-2Lo">
-                                            <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="Yzo-QD-fmV"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -360,7 +348,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="667" y="-63"/>
+            <point key="canvasLocation" x="651" y="-62"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="l7G-kG-DjR">
@@ -369,7 +357,7 @@
                     <window key="window" title="Open Location" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Qdj-Uz-pZ5">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="245" y="301" width="558" height="222"/>
+                        <rect key="contentRect" x="245" y="301" width="526" height="222"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                     </window>
                     <connections>
@@ -378,7 +366,7 @@
                 </windowController>
                 <customObject id="fys-ne-ueE" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="667" y="238.5"/>
+            <point key="canvasLocation" x="651" y="238"/>
         </scene>
         <!--Open Location View Controller-->
         <scene sceneID="vPX-Rw-bgZ">
@@ -499,11 +487,11 @@ Gw
             <objects>
                 <windowController id="qmD-kN-bD5" customClass="DocumentWindowController" sceneMemberID="viewController">
                     <window key="window" title="Figma Document" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" frameAutosaveName="" animationBehavior="default" titleVisibility="hidden" id="csp-8t-ctO">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="245" y="317" width="640" height="480"/>
+                        <rect key="contentRect" x="245" y="317" width="720" height="480"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
-                        <value key="minSize" type="size" width="320" height="320"/>
+                        <value key="minSize" type="size" width="720" height="480"/>
                         <toolbar key="toolbar" implicitIdentifier="4919774D-CC48-418E-8F6F-4143C954F581" centeredItem="nwy-jM-blc" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="z7L-HX-hhV">
                             <allowedToolbarItems>
                                 <toolbarItem implicitItemIdentifier="9F39E333-9625-4E6A-A52F-9418CAA7D6F8" label="Refresh" paletteLabel="Refresh" image="NSRefreshTemplate" id="NHv-Gm-Lms">
@@ -524,6 +512,24 @@ Gw
                                         <action selector="RefreshClicked:" target="qmD-kN-bD5" id="he4-XR-IPe"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="1E10970B-EC24-4C84-8D3B-B64D84CC147D" label="Code" paletteLabel="Code" image="NSPathTemplate" id="TNB-bp-Pzm">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="56" height="32"/>
+                                    <size key="maxSize" width="56" height="32"/>
+                                    <button key="view" verticalHuggingPriority="750" id="Qs9-wt-CEW">
+                                        <rect key="frame" x="0.0" y="14" width="56" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSPathTemplate" imagePosition="overlaps" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="TWV-HR-eu9">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                            <string key="keyEquivalent">r</string>
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <segue destination="o6B-CK-6VC" kind="show" id="TUM-0U-EGg"/>
+                                        </connections>
+                                    </button>
+                                </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="815A7408-E296-476E-A40B-09DA766A5965" label="Title" paletteLabel="Title" sizingBehavior="auto" id="nwy-jM-blc">
                                     <nil key="toolTip"/>
                                     <textField key="view" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zI9-VO-MN3" userLabel="TitleTextField">
@@ -539,15 +545,18 @@ Gw
                                 <toolbarItem implicitItemIdentifier="B7EEED89-F9CB-4140-B5DF-4A5347FA7BEC" label="Page" paletteLabel="Page" id="skh-lC-i6L">
                                     <nil key="toolTip"/>
                                     <size key="minSize" width="100" height="24"/>
-                                    <size key="maxSize" width="100" height="24"/>
+                                    <size key="maxSize" width="128" height="24"/>
                                     <popUpButton key="view" verticalHuggingPriority="750" id="fWU-rn-Zi4" userLabel="PopUpButton">
-                                        <rect key="frame" x="0.0" y="14" width="100" height="24"/>
+                                        <rect key="frame" x="0.0" y="14" width="128" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <popUpButtonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="left" lineBreakMode="truncatingTail" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="UE1-MP-Sxw" userLabel="Cell">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="menu"/>
                                             <menu key="menu" id="htg-1M-Blp"/>
                                         </popUpButtonCell>
+                                        <connections>
+                                            <action selector="PageClicked:" target="qmD-kN-bD5" id="kTT-qB-fu4"/>
+                                        </connections>
                                     </popUpButton>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="8jD-Ch-646"/>
@@ -573,6 +582,7 @@ Gw
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="NHv-Gm-Lms"/>
+                                <toolbarItem reference="TNB-bp-Pzm"/>
                                 <toolbarItem reference="8jD-Ch-646"/>
                                 <toolbarItem reference="nwy-jM-blc"/>
                                 <toolbarItem reference="8jD-Ch-646"/>
@@ -585,6 +595,7 @@ Gw
                         </connections>
                     </window>
                     <connections>
+                        <outlet property="CodeButton" destination="Qs9-wt-CEW" id="HKe-Kg-o9V"/>
                         <outlet property="MainToolbar" destination="z7L-HX-hhV" id="1Xy-J8-wDQ"/>
                         <outlet property="PagePopUpButton" destination="fWU-rn-Zi4" id="SI2-eg-muq"/>
                         <outlet property="RefreshButton" destination="iXD-EU-bKJ" id="ZWE-0H-D3R"/>
@@ -595,18 +606,113 @@ Gw
                 </windowController>
                 <customObject id="mhM-RN-F0i" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1388" y="347"/>
+            <point key="canvasLocation" x="1399" y="381"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="esF-GF-JfJ">
+            <objects>
+                <windowController showSeguePresentationStyle="single" id="o6B-CK-6VC" customClass="CodeWindowController" sceneMemberID="viewController">
+                    <window key="window" title="Code" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="cKr-uO-82e">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="245" y="301" width="800" height="495"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <connections>
+                            <outlet property="delegate" destination="o6B-CK-6VC" id="YUJ-Ro-d8J"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="EWm-AV-K2z" kind="relationship" relationship="window.shadowedContentViewController" id="ki6-rc-7sC"/>
+                    </connections>
+                </windowController>
+                <customObject id="O4I-Xg-jqG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2275" y="374"/>
+        </scene>
+        <!--Code View Controller-->
+        <scene sceneID="gUJ-Mc-Sqp">
+            <objects>
+                <viewController id="EWm-AV-K2z" customClass="CodeViewController" sceneMemberID="viewController">
+                    <view key="view" id="Y0U-so-cVG">
+                        <rect key="frame" x="0.0" y="0.0" width="800" height="480"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <splitView fixedFrame="YES" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ytw-WN-5SQ">
+                                <rect key="frame" x="0.0" y="0.0" width="800" height="480"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" id="PhK-CI-y0m">
+                                        <rect key="frame" x="0.0" y="0.0" width="224" height="480"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES"/>
+                                        <clipView key="contentView" id="fTM-2e-Vww">
+                                            <rect key="frame" x="0.0" y="0.0" width="224" height="480"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <subviews>
+                                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="kga-3e-yx5" id="Zgn-fc-4SL">
+                                                    <rect key="frame" x="0.0" y="0.0" width="224" height="480"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <size key="intercellSpacing" width="3" height="2"/>
+                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                                    <tableColumns>
+                                                        <tableColumn editable="NO" width="221" minWidth="40" maxWidth="1000" id="kga-3e-yx5">
+                                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document">
+                                                                <font key="font" metaFont="smallSystem"/>
+                                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                            </tableHeaderCell>
+                                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="1Sh-mC-Dc7">
+                                                                <font key="font" metaFont="system"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        </tableColumn>
+                                                    </tableColumns>
+                                                </outlineView>
+                                            </subviews>
+                                        </clipView>
+                                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="2BL-YU-2FG">
+                                            <rect key="frame" x="0.0" y="465" width="224" height="16"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                        <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="lkH-Xp-Mgd">
+                                            <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </scroller>
+                                    </scrollView>
+                                    <textField verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" id="6Sz-kf-eY9" userLabel="Code">
+                                        <rect key="frame" x="225" y="0.0" width="575" height="480"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" title="var button = new NSButton();" placeholderString=" ← Select a layer to show its code" drawsBackground="YES" id="QfS-pp-oMH">
+                                            <font key="font" size="12" name="SFMono-Regular"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <holdingPriorities>
+                                    <real value="250"/>
+                                    <real value="250"/>
+                                </holdingPriorities>
+                            </splitView>
+                        </subviews>
+                    </view>
+                </viewController>
+                <customObject id="Rml-aM-OhO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2275" y="1045"/>
         </scene>
         <!--Document View Controller-->
         <scene sceneID="9Jh-cp-1WU">
             <objects>
                 <viewController id="kAC-hG-JBc" customClass="DocumentViewController" sceneMemberID="viewController">
                     <view key="view" id="qf5-jq-9Hz" customClass="FileContainerView">
-                        <rect key="frame" x="0.0" y="0.0" width="640" height="480"/>
+                        <rect key="frame" x="0.0" y="0.0" width="720" height="480"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Ra0-At-UIb">
-                                <rect key="frame" x="304" y="224" width="32" height="32"/>
+                                <rect key="frame" x="344" y="224" width="32" height="32"/>
                             </progressIndicator>
                         </subviews>
                         <constraints>
@@ -620,10 +726,11 @@ Gw
                 </viewController>
                 <customObject id="lDY-4l-kRL" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1388" y="1005"/>
+            <point key="canvasLocation" x="1399" y="1045"/>
         </scene>
     </scenes>
     <resources>
+        <image name="NSPathTemplate" width="16" height="10"/>
         <image name="NSRefreshTemplate" width="11" height="15"/>
     </resources>
 </document>

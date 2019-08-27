@@ -56,7 +56,13 @@ namespace FigmaSharp.Samples
 
 		public event EventHandler RefreshRequested;
 
-		public DocumentWindowController(IntPtr handle) : base(handle)
+        public string Link_ID = "";
+        public string Version_ID = null;
+        public string Page_ID = null;
+
+
+
+        public DocumentWindowController(IntPtr handle) : base(handle)
         {
         }
 
@@ -64,23 +70,120 @@ namespace FigmaSharp.Samples
         {
             PositionWindow();
             base.WindowDidLoad();
-		}
-
-		public void UpdatePagesPopupButton()
-        {
-            PagePopUpButton.AddItem("Page 1");
-            PagePopUpButton.Activated += delegate {
-                Console.WriteLine(PagePopUpButton.SelectedItem.Title);
-            };
         }
 
-		public void EnableButtons (bool enable)
-		{
-			RefreshButton.Enabled = enable;
-			PagePopUpButton.Enabled = enable;
-		}
 
-        public void UpdateVersionMenu()
+        public void LoadDocument(string token, string link_id)
+        {
+            Token = token;
+            Link_ID = link_id;
+
+            Load(version_id: "", page_id: "");
+        }
+
+
+        NSScrollView my_scroll_view;
+        FigmaFileProvider fileProvider;
+
+        void Load(string version_id, string page_id)
+        {
+            Title = string.Format("Opening “{0}”…", Link_ID);
+
+            (Window.ContentViewController as DocumentViewController).ToggleSpinnerState(toggle_on: true);
+            RefreshButton.Enabled = false;
+            CodeButton.Enabled = false;
+
+            AppContext.Current.SetAccessToken(Token);
+            var converters = AppContext.Current.GetFigmaConverters();
+
+            my_scroll_view = new NSScrollView();
+            ScrollViewWrapper wrapper = new ScrollViewWrapper(my_scroll_view);
+
+
+
+            new Thread(() => {
+
+
+                this.InvokeOnMainThread(() =>
+                {
+                    fileProvider = new FigmaRemoteFileProvider();
+                    var rendererService = new FigmaFileRendererService(fileProvider, converters);
+
+                    rendererService.Start(Link_ID, wrapper);
+                    var distributionService = new FigmaViewRendererDistributionService(rendererService);
+                    distributionService.Start();
+
+                    fileProvider.ImageLinksProcessed += (s, e) => {
+                        this.InvokeOnMainThread(() =>
+                        {
+                            Console.WriteLine("LOADING DONE");
+
+
+
+
+                            if (fileProvider.Response == null)
+                            {
+                                (Window.ContentViewController as DocumentViewController).ToggleSpinnerState(toggle_on: false);
+                                ShowError();
+                                return;
+                            }
+
+                            FigmaCanvas canvas;
+
+                            if (!string.IsNullOrEmpty(page_id))
+                                canvas = (FigmaCanvas)fileProvider.Nodes.First(x => x.name == page_id);
+                            else
+                                canvas = (FigmaCanvas)fileProvider.Nodes.OfType<FigmaCanvas>().FirstOrDefault();
+
+                            wrapper.BackgroundColor = canvas.backgroundColor;
+                            wrapper.AdjustToContent();
+                            // TODO: scroll to middle
+
+
+                            var scroll = (NSScrollView)wrapper.NativeObject;
+                            scroll.ScrollerStyle = NSScrollerStyle.Overlay;
+                            scroll.AutohidesScrollers = true;
+                            Window.ContentView.AddSubview(scroll);
+                            scroll.Frame = Window.ContentView.Bounds;
+
+                            Title = fileProvider.Response.name;
+                            Window.Title = fileProvider.Response.name;
+
+                            UpdateVersionMenu();
+                            UpdatePagesPopupButton();
+
+                            RefreshButton.Enabled = true;
+                            CodeButton.Enabled = true;
+                            PagePopUpButton.Enabled = true;
+
+                            (Window.ContentViewController as DocumentViewController).ToggleSpinnerState(toggle_on: false);
+
+
+                        });
+                    };
+                });
+
+            }).Start();
+        }
+
+
+        public void Reload()
+        {
+            Load(version_id: "", page_id: "");
+        }
+
+
+        void UpdatePagesPopupButton()
+        {
+            foreach (FigmaCanvas canvas in fileProvider.Nodes.OfType<FigmaCanvas>())
+                PagePopUpButton.AddItem(canvas.name);
+
+            if (Page_ID != null)
+                PagePopUpButton.SelectItem(Page_ID);
+        }
+
+
+        void UpdateVersionMenu()
         {
             var menu = new VersionMenu();
 
@@ -88,37 +191,61 @@ namespace FigmaSharp.Samples
 				VersionSelected?.Invoke(this, version_id);
             };
 
+            /*
             menu.AddItem("1", "FigmaSharp.Cocoa 0.0.1", DateTime.Now);
             menu.AddItem("2", "FigmaSharp.Cocoa 0.0.2", DateTime.Now);
             menu.AddItem("3", "FigmaSharp.Cocoa 0.0.3", DateTime.Now);
             menu.AddItem("4", DateTime.Now);
             menu.AddItem("5", DateTime.Now.AddDays(-7));
             menu.AddItem("6", DateTime.Now.AddDays(-14));
+            */
 
             menu.UseAsVersionsMenu();
         }
 
         partial void RefreshClicked(NSObject sender)
         {
-			RefreshRequested?.Invoke(this, EventArgs.Empty);
+            ToggleSpinnerState(toggle_on: true);
+            RefreshButton.Enabled = false;
+            CodeButton.Enabled = false;
+
+            new Thread(() => {
+                this.InvokeOnMainThread(() => {
+                    Reload();
+
+                    ToggleSpinnerState(toggle_on: false);
+                    RefreshButton.Enabled = true;
+                    CodeButton.Enabled = true;
+                });
+
+            }).Start();
         }
 
-		public void ToggleSpinnerState(bool toggle_on)
-		{
-			if (MainToolbar.VisibleItems[1].Identifier == "Spinner")
-			{
-				(MainToolbar.VisibleItems[1].View as NSProgressIndicator).StopAnimation(this);
-				MainToolbar.RemoveItem(1);
-			}
 
-			if (toggle_on)
-			{
-				MainToolbar.InsertItem("Spinner", 1);
-				(MainToolbar.VisibleItems[1].View as NSProgressIndicator).StartAnimation(this);
-			}
-		}
+        partial void PageClicked(NSObject sender)
+        {
+            Page_ID = PagePopUpButton.TitleOfSelectedItem;
+            Load(version_id: "", page_id: PagePopUpButton.TitleOfSelectedItem);
+        }
 
-		void PositionWindow()
+
+        void ToggleSpinnerState(bool toggle_on)
+        {
+            const int spinner_position = 2;
+
+            if (MainToolbar.VisibleItems[spinner_position].Identifier == "Spinner") {
+                (MainToolbar.VisibleItems[spinner_position].View as NSProgressIndicator).StopAnimation(this);
+                MainToolbar.RemoveItem(spinner_position);
+            }
+
+            if (toggle_on) {
+                MainToolbar.InsertItem("Spinner", spinner_position);
+                (MainToolbar.VisibleItems[spinner_position].View as NSProgressIndicator).StartAnimation(this);
+            }
+        }
+
+
+        void PositionWindow()
         {
             WindowCount++;
             CGRect frame = Window.Frame;
