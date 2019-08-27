@@ -54,8 +54,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
-      <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
-   <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />        
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -73,6 +73,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Converters\" />
+    <Folder Include="Views\" />
+    <Folder Include="Converters\LoadingDialog\" />
+    <Folder Include="Converters\LoginDialog\" />
+    <Folder Include="Converters\RecentItemsDialog\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -80,6 +85,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Views\FixedFlatButton.cs" />
+    <Compile Include="Converters\CloseButtonConverter.cs" />
+    <Compile Include="Views\CustomSearchField.cs" />
+    <Compile Include="Converters\LoadingDialog\LoadingSpinnerConverter.cs" />
+    <Compile Include="Converters\LoginDialog\WhySignInLinkConverter.cs" />
+    <Compile Include="Converters\LoginDialog\SignInMicrosoftButtonConverter.cs" />
+    <Compile Include="Converters\RecentItemsDialog\OperationButtonConverter.cs" />
+    <Compile Include="Converters\LoginDialog\CreateAccountLinkConverter.cs" />
+    <Compile Include="Converters\LoginDialog\DoThisLaterButtonConverter.cs" />
+    <Compile Include="Converters\RecentItemsDialog\SearchFilterConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -100,6 +115,14 @@
     <ProjectReference Include="..\..\..\FigmaSharp.NativeControls\FigmaSharp.NativeControls.Cocoa\FigmaSharp.NativeControls.Cocoa.csproj">
       <Project>{DA803D6D-59D2-4BA0-8DEC-2C6B054B025C}</Project>
       <Name>FigmaSharp.NativeControls.Cocoa</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms\LiteForms.csproj">
+      <Project>{36AA8FA7-5055-44CB-956E-C2F376050BB4}</Project>
+      <Name>LiteForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms.Cocoa\LiteForms.Cocoa.csproj">
+      <Project>{3E0633F6-BD50-4D09-8601-A143F6CFDD44}</Project>
+      <Name>LiteForms.Cocoa</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\NativeControls.Shared\NativeControls.Shared.projitems" Label="Shared" Condition="Exists('..\NativeControls.Shared\NativeControls.Shared.projitems')" />

@@ -31,29 +31,33 @@ using System.Text;
 
 using FigmaSharp.Converters;
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
+using LiteForms.Cocoa;
 
 namespace FigmaSharp.Cocoa.Converters
 {
     public class FigmaTextConverter : FigmaTextConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
             var figmaText = ((FigmaText)currentNode);
             Console.WriteLine("'{0}' with Font:'{1}({2})' s:{3} w:{4} ...", figmaText.characters, figmaText.style.fontFamily, figmaText.style.fontPostScriptName, figmaText.style.fontSize, figmaText.style.fontWeight);
 
-            var font = figmaText.style.ToNSFont();
-            var textField = FigmaViewsHelper.CreateLabel(figmaText.characters, font);
+			var label = new Label();
+			var textField = label.NativeObject as FNSTextField;
+			textField.Font = figmaText.style.ToNSFont();
+			label.Text = figmaText.characters;
             textField.Configure(figmaText);
-            var wrapper = new ViewWrapper(textField);
-            return wrapper;
+            return label;
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             var figmaText = ((FigmaText)currentNode);
             StringBuilder builder = new StringBuilder();
             var name = "[NAME]";
-            builder.AppendLine(string.Format ("var {0} = {1};", name, FigmaViewsHelper.CreateLabelToDesignerString (figmaText.characters)));
+            builder.AppendLine(string.Format ("var {0} = {1};", name, FigmaExtensions.CreateLabelToDesignerString (figmaText.characters)));
 
             var nsFont = figmaText.style.ToNSFont();
             builder.AppendLine(string.Format("{0}.Font = {1};", name, figmaText.style.ToNSFontDesignerString()));

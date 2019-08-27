@@ -37,6 +37,7 @@ using FigmaSharp;
 using FigmaSharp.Cocoa;
 using FigmaSharp.Models;
 using FigmaSharp.Services;
+using LiteForms.Cocoa;
 
 namespace FigmaSharp.Samples
 {
@@ -51,8 +52,9 @@ namespace FigmaSharp.Samples
             set { TitleTextField.StringValue = value; }
         }
 
+		public event EventHandler<string> VersionSelected;
 
-        public string Token = "";
+		public event EventHandler RefreshRequested;
 
         public string Link_ID = "";
         public string Version_ID = null;
@@ -64,8 +66,7 @@ namespace FigmaSharp.Samples
         {
         }
 
-
-        public override void WindowDidLoad()
+		public override void WindowDidLoad()
         {
             PositionWindow();
             base.WindowDidLoad();
@@ -187,7 +188,7 @@ namespace FigmaSharp.Samples
             var menu = new VersionMenu();
 
             menu.VersionSelected += delegate (string version_id) {
-                Load(version_id, null);
+				VersionSelected?.Invoke(this, version_id);
             };
 
             /*
@@ -201,7 +202,6 @@ namespace FigmaSharp.Samples
 
             menu.UseAsVersionsMenu();
         }
-
 
         partial void RefreshClicked(NSObject sender)
         {
@@ -256,12 +256,11 @@ namespace FigmaSharp.Samples
             Window.SetFrame(frame, display: true);
         }
 
-
-        void ShowError()
+        public void ShowError(string linkId)
         {
             var alert = new NSAlert() {
                 AlertStyle = NSAlertStyle.Warning,
-                MessageText = string.Format("Could not open “{0}”", Link_ID),
+                MessageText = string.Format("Could not open “{0}”", linkId),
                 InformativeText = "Please check if the provided Figma Link and Personal Access Token are correct.",
             };
 

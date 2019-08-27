@@ -5,7 +5,8 @@ using CoreGraphics;
 using Foundation;
 using System.Linq;
 using System.Text;
-
+using LiteForms;
+using LiteForms.Cocoa;
 using FigmaSharp.Models;
 
 namespace FigmaSharp.Cocoa
@@ -15,9 +16,10 @@ namespace FigmaSharp.Cocoa
         public static void Configure(this NSView view, FigmaFrameEntity child)
         {
             Configure(view, (FigmaNode)child);
-
-            view.AlphaValue = child.opacity;
-        }
+		
+			view.AlphaValue = child.opacity;
+			view.Layer.BackgroundColor = child.backgroundColor.MixOpacity(child.opacity).ToCGColor();
+		}
 
         public static void Configure(this StringBuilder builder, string name, FigmaNode child)
         {
@@ -32,8 +34,8 @@ namespace FigmaSharp.Cocoa
                 builder.AppendLine(string.Format("{0}.SetFrameSize(new {1}({2}, {3}));", 
                     name, 
                     nameof (CGSize), 
-                    container.absoluteBoundingBox.width.ToDesignerString (), 
-                    container.absoluteBoundingBox.height.ToDesignerString ()
+                    container.absoluteBoundingBox.Width.ToDesignerString (), 
+                    container.absoluteBoundingBox.Height.ToDesignerString ()
                     ));
             }
         }
@@ -45,7 +47,7 @@ namespace FigmaSharp.Cocoa
 
             if (child is IAbsoluteBoundingBox container)
             {
-                view.SetFrameSize(new CGSize(container.absoluteBoundingBox.width, container.absoluteBoundingBox.height));
+                view.SetFrameSize(new CGSize(container.absoluteBoundingBox.Width, container.absoluteBoundingBox.Height));
             }
         }
 
@@ -53,42 +55,42 @@ namespace FigmaSharp.Cocoa
         {
             Configure(view, (FigmaNode)elipse);
 
-            var circleLayer = new CAShapeLayer();
-            var bezierPath = NSBezierPath.FromOvalInRect(new CGRect(0, 0, elipse.absoluteBoundingBox.width, elipse.absoluteBoundingBox.height));
-            circleLayer.Path = bezierPath.ToCGPath();
+            //var circleLayer = new CAShapeLayer();
+            //var bezierPath = NSBezierPath.FromOvalInRect(new CGRect(0, 0, elipse.absoluteBoundingBox.Width, elipse.absoluteBoundingBox.Height));
+            //circleLayer.Path = bezierPath.ToCGPath();
 
-            view.Layer.AddSublayer(circleLayer);
+            //view.Layer.AddSublayer(circleLayer);
 
-            var fills = elipse.fills.OfType<FigmaPaint>().FirstOrDefault();
-            if (fills != null && fills.color != null)
-            {
-                circleLayer.FillColor = fills.color.MixOpacity(fills.opacity).ToNSColor().CGColor;
-            } else
-            {
-                circleLayer.FillColor = NSColor.Clear.CGColor;
-            }
+            //var fills = elipse.fills.OfType<FigmaPaint>().FirstOrDefault();
+            //if (fills != null && fills.color != null)
+            //{
+            //    circleLayer.FillColor = fills.color.MixOpacity(fills.opacity).ToNSColor().CGColor;
+            //} else
+            //{
+            //    circleLayer.FillColor = NSColor.Clear.CGColor;
+            //}
 
-            var strokes = elipse.strokes.FirstOrDefault();
-            if (strokes != null)
-            {
-                if (strokes.color != null)
-                {
-                    circleLayer.StrokeColor = strokes.color.MixOpacity(strokes.opacity).ToNSColor().CGColor;
-                }
-            }
+            //var strokes = elipse.strokes.FirstOrDefault();
+            //if (strokes != null)
+            //{
+            //    if (strokes.color != null)
+            //    {
+            //        circleLayer.StrokeColor = strokes.color.MixOpacity(strokes.opacity).ToNSColor().CGColor;
+            //    }
+            //}
 
-            if (elipse.strokeDashes != null)
-            {
-                var number = new NSNumber[elipse.strokeDashes.Length];
-                for (int i = 0; i < elipse.strokeDashes.Length; i++)
-                {
-                    number[i] = elipse.strokeDashes[i];
-                }
-                circleLayer.LineDashPattern = number;
-            }
+            //if (elipse.strokeDashes != null)
+            //{
+            //    var number = new NSNumber[elipse.strokeDashes.Length];
+            //    for (int i = 0; i < elipse.strokeDashes.Length; i++)
+            //    {
+            //        number[i] = elipse.strokeDashes[i];
+            //    }
+            //    circleLayer.LineDashPattern = number;
+            //}
 
-            circleLayer.BackgroundColor = NSColor.Clear.CGColor;
-            circleLayer.LineWidth = elipse.strokeWeight;
+            //circleLayer.BackgroundColor = NSColor.Clear.CGColor;
+            //circleLayer.LineWidth = elipse.strokeWeight;
 
             view.AlphaValue = elipse.opacity;
         }
@@ -99,13 +101,13 @@ namespace FigmaSharp.Cocoa
             Configure(figmaLineView, (FigmaNode)figmaLine);
 
             var absolute = figmaLine.absoluteBoundingBox;
-            var lineWidth = absolute.width == 0 ? figmaLine.strokeWeight : absolute.width;
+            var lineWidth = absolute.Width == 0 ? figmaLine.strokeWeight : absolute.Width;
 
             var constraintWidth = figmaLineView.WidthAnchor.ConstraintEqualToConstant(lineWidth);
             constraintWidth.Priority = (uint)NSLayoutPriority.DefaultLow;
             constraintWidth.Active = true;
 
-            var lineHeight = absolute.height == 0 ? figmaLine.strokeWeight : absolute.height;
+            var lineHeight = absolute.Height == 0 ? figmaLine.strokeWeight : absolute.Height;
 
             var constraintHeight = figmaLineView.HeightAnchor.ConstraintEqualToConstant(lineHeight);
             constraintHeight.Priority = (uint)NSLayoutPriority.DefaultLow;
@@ -141,62 +143,62 @@ namespace FigmaSharp.Cocoa
             }
         }
 
-        static FigmaColor MixOpacity (this FigmaColor color, float opacity)
+        static Color MixOpacity (this Color color, float opacity)
         {
-            return new FigmaColor { a = Math.Min(color.a, opacity), r = color.r, g = color.g, b = color.b };
+            return new Color { A = Math.Min(color.A, opacity), R = color.R, G = color.G, B = color.B };
         }
 
-        public static void Configure(this NSView view, FigmaRectangleVector child)
+        public static void Configure(this NSView view, RectangleVector child)
         {
             Configure(view, (FigmaVectorEntity)child);
 
-            var shapeLayer = new CAShapeLayer
-            {
-                Path = NSBezierPath.FromRect(view.Bounds).ToCGPath(),
-                Frame = view.Layer.Frame
-            };
-            view.Layer = shapeLayer;
+            //var shapeLayer = new CAShapeLayer
+            //{
+            //    Path = NSBezierPath.FromRect(view.Bounds).ToCGPath(),
+            //    Frame = view.Layer.Frame
+            //};
+            //view.Layer = shapeLayer;
 
-            var fill = child.fills?.FirstOrDefault();
-            if (fill != null && fill.visible && fill.color != null)
-            {
-                shapeLayer.FillColor = fill.color.MixOpacity (fill.opacity).ToNSColor().CGColor;
-            } else
-            {
-                shapeLayer.FillColor = NSColor.Clear.CGColor;
-            }
+            //var fill = child.fills?.FirstOrDefault();
+            //if (fill != null && fill.visible && fill.color != null)
+            //{
+            //    shapeLayer.FillColor = fill.color.MixOpacity (fill.opacity).ToNSColor().CGColor;
+            //} else
+            //{
+            //    shapeLayer.FillColor = NSColor.Clear.CGColor;
+            //}
             
-            if (child.strokeDashes != null)
-            {
-                var number = new NSNumber[child.strokeDashes.Length];
-                for (int i = 0; i < child.strokeDashes.Length; i++)
-                {
-                    number[i] = child.strokeDashes[i];
-                }
-                shapeLayer.LineDashPattern = number;
-            }
+            //if (child.strokeDashes != null)
+            //{
+            //    var number = new NSNumber[child.strokeDashes.Length];
+            //    for (int i = 0; i < child.strokeDashes.Length; i++)
+            //    {
+            //        number[i] = child.strokeDashes[i];
+            //    }
+            //    shapeLayer.LineDashPattern = number;
+            //}
 
-            //shapeLayer.BackgroundColor = child.col
-            shapeLayer.LineWidth = child.strokeWeight * 2;
+            ////shapeLayer.BackgroundColor = child.col
+            //shapeLayer.LineWidth = child.strokeWeight * 2;
 
-            var strokes = child.strokes.FirstOrDefault();
-            if (strokes != null && strokes.visible)
-            {
-                if (strokes.color != null)
-                {
-                    shapeLayer.StrokeColor = strokes.color.MixOpacity (strokes.opacity).ToNSColor().CGColor;
-                    if (shapeLayer.LineWidth == 0)
-                    {
-                        shapeLayer.LineWidth = 1f;
-                    }
-                }
-            }
+            //var strokes = child.strokes.FirstOrDefault();
+            //if (strokes != null && strokes.visible)
+            //{
+            //    if (strokes.color != null)
+            //    {
+            //        shapeLayer.StrokeColor = strokes.color.MixOpacity (strokes.opacity).ToNSColor().CGColor;
+            //        if (shapeLayer.LineWidth == 0)
+            //        {
+            //            shapeLayer.LineWidth = 1f;
+            //        }
+            //    }
+            //}
             
-            shapeLayer.CornerRadius = child.cornerRadius;
-            view.AlphaValue = child.opacity;
+            //shapeLayer.CornerRadius = child.cornerRadius;
+            //view.AlphaValue = child.opacity;
         }
 
-        public static void Configure(this StringBuilder builder, string name, FigmaRectangleVector child)
+        public static void Configure(this StringBuilder builder, string name, RectangleVector child)
         {
             Configure(builder, name, (FigmaVectorEntity)child);
 
@@ -272,7 +274,7 @@ namespace FigmaSharp.Cocoa
             var fills = text.fills.FirstOrDefault();
             if (fills != null && fills.visible)
             {
-                label.TextColor = FigmaExtensions.ToNSColor(fills.color);
+                label.TextColor = fills.color.ToNSColor();
             }
 
             if (text.characterStyleOverrides != null && text.characterStyleOverrides.Length > 0)

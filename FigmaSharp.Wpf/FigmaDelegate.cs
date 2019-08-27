@@ -17,6 +17,7 @@ namespace FigmaSharp.Wpf
     public class FigmaDelegate : IFigmaDelegate
     {
         static readonly FigmaViewConverter[] figmaViewConverters = {
+            new FigmaRegularPolygonConverter (),
             new FigmaVectorViewConverter (),
             new FigmaFrameEntityConverter (),
             new FigmaTextConverter (),
@@ -89,7 +90,7 @@ namespace FigmaSharp.Wpf
         {
             ImageViewWrapper imageView = null;
             Application.Current.Dispatcher.Invoke(() => {
-                var picture = new Image();
+                var picture = new CanvasImage();
                 imageView = new ImageViewWrapper(picture);
                 imageView.SetImage(image);
             });

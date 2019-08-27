@@ -13,8 +13,10 @@ namespace FigmaSharp.WinForms.Converters
     {
         public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
         {
-            var elipseView = new TransparentControl ();
-            return new ViewWrapper (elipseView);
+            var elipseView = new ImageTransparentControl();
+            var elipse = (FigmaElipse)currentNode;
+            elipseView.Configure(elipse);
+            return new ViewWrapper(elipseView);
         }
 
         public override string ConvertToCode(FigmaNode currentNode)

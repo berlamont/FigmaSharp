@@ -30,20 +30,22 @@ using System.Text;
 using FigmaSharp.Converters;
 using Xamarin.Forms;
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
 
 namespace FigmaSharp.Forms.Converters
 {
     public class FigmaVectorEntityConverter : FigmaVectorEntityConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
             var vector = ((FigmaVectorEntity)currentNode);
             var currengroupView = new Image();
             currengroupView.Configure(vector);
-            return new ImageViewWrapper(currengroupView);
+            return new LiteForms.Forms.ImageView(currengroupView);
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             StringBuilder builder = new StringBuilder();
             var name = "imageView";

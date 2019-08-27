@@ -42,45 +42,12 @@ using Foundation;
 
 using FigmaSharp.Converters;
 using FigmaSharp.Models;
+using LiteForms;
 
 namespace FigmaSharp.Cocoa
 {
     public static class FigmaExtensions
     {
-        public static T FindNativeViewByName<T>(this Services.FigmaRendererService rendererService, string name)
-        {
-            foreach (var node in rendererService.NodesProcessed)
-            {
-                if (node.View.NativeObject is T && node.FigmaNode.name == name)
-                {
-                    return (T)node.View.NativeObject;
-                }
-            }
-            return default(T);
-        }
-
-        public static IEnumerable<T> FindNativeViewsByName<T>(this Services.FigmaRendererService rendererService, string name)
-        {
-            foreach (var node in rendererService.NodesProcessed)
-            {
-                if (node.View.NativeObject is T && node.FigmaNode.name == name)
-                {
-                    yield return (T) node.View.NativeObject;
-                }
-            }
-        }
-
-        public static IEnumerable<T> FindNativeViewsStartsWith<T>(this Services.FigmaRendererService rendererService, string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
-        {
-            foreach (var node in rendererService.NodesProcessed)
-            {
-                if (node.View.NativeObject is T && node.FigmaNode.name.StartsWith (name, stringComparison))
-                {
-                    yield return (T)node.View.NativeObject;
-                }
-            }
-        }
-
         public static NSView FindNativeViewByName(this Services.FigmaRendererService rendererService, string name)
         {
             foreach (var node in rendererService.NodesProcessed)
@@ -98,7 +65,7 @@ namespace FigmaSharp.Cocoa
             var label = new NSTextField()
             {
                 StringValue = text ?? "",
-                Font = font ?? GetSystemFont(false),
+                Font = font ?? LiteForms.Cocoa.ViewsHelper. GetSystemFont(false),
                 Editable = false,
                 Bordered = false,
                 Bezeled = false,
@@ -110,28 +77,7 @@ namespace FigmaSharp.Cocoa
             return label;
         }
 
-        public static NSFont GetSystemFont(bool bold, float size = 0.0f)
-        {
-            if (size <= 0)
-            {
-                size = (float)NSFont.SystemFontSize;
-            }
-            if (bold)
-                return NSFont.BoldSystemFontOfSize(size);
-            return NSFont.SystemFontOfSize(size);
-        }
-
         #region View Extensions
-
-        public static NSColor ToNSColor(this FigmaColor color)
-        {
-            return NSColor.FromRgba(color.r, color.g, color.b, color.a);
-        }
-
-        public static FigmaColor ToFigmaColor(this NSColor color)
-        {
-            return new FigmaColor() { a = (float)color.AlphaComponent, r = (float)color.RedComponent, g = (float)color.GreenComponent, b = (float)color.BlueComponent };
-        }
 
         public static string ToDesignerString(this float value)
         {
@@ -148,20 +94,15 @@ namespace FigmaSharp.Cocoa
             return string.Format ("{0}.{1}", nameof(NSTextAlignment), alignment.ToString());
         }
 
-        public static string ToDesignerString(this FigmaColor color, bool cgColor = false)
+        public static string ToDesignerString(this Color color, bool cgColor = false)
         {
             var cg = cgColor ? ".CGColor" : "";
-            return $"NSColor.FromRgba({color.r.ToDesignerString ()}, {color.g.ToDesignerString ()}, {color.b.ToDesignerString ()}, {color.a.ToDesignerString ()}){cg}";
+            return $"NSColor.FromRgba({color.R.ToDesignerString ()}, {color.G.ToDesignerString ()}, {color.B.ToDesignerString ()}, {color.A.ToDesignerString ()}){cg}";
         }
 
         public static string ToDesignerString(this bool value)
         {
             return value ? "true" : "false";
-        }
-
-        public static CGRect ToCGRect(this FigmaRectangle rectangle)
-        {
-            return new CGRect(0, 0, rectangle.width, rectangle.height);
         }
 
         public static string ToDesignerString(this NSFontTraitMask mask)
@@ -174,7 +115,21 @@ namespace FigmaSharp.Cocoa
             //return string.Format("{0}.{1}", nameof(NSFontTraitMask), mask.ToString());
         }
 
-        public static string ToNSFontDesignerString(this FigmaTypeStyle style)
+		public static string CreateLabelToDesignerString(string text, NSTextAlignment alignment = NSTextAlignment.Left)
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.Append(string.Format("new {0}() {{", nameof(NSTextField)));
+			builder.AppendLine(string.Format("    StringValue = \"{0}\",", text));
+			builder.AppendLine("Editable = false,");
+			builder.AppendLine("Bordered = false,");
+			builder.AppendLine("Bezeled = false,");
+			builder.AppendLine("DrawsBackground = false,");
+			builder.AppendLine(string.Format("Alignment = {0},", alignment.ToDesignerString()));
+			builder.Append("}");
+			return builder.ToString();
+		}
+
+		public static string ToNSFontDesignerString(this FigmaTypeStyle style)
         {
             var font = style.ToNSFont();
             var family = font.FamilyName;
@@ -227,7 +182,7 @@ namespace FigmaSharp.Cocoa
 
             var fontDefault = NSFont.SystemFontOfSize(style.fontSize, GetFontWeight(style));
             var traits = NSFontManager.SharedFontManager.TraitsOfFont(fontDefault);
-            var weight = Math.Max (ToAppKitFontWeight(style.fontWeight) - 2,1);
+            var weight = Math.Max (LiteForms.Cocoa.ViewsHelper. ToAppKitFontWeight(style.fontWeight) - 2,1);
 
             NSFont font = null;
             try
@@ -256,39 +211,39 @@ namespace FigmaSharp.Cocoa
         public static CGPoint GetRelativePosition(this IAbsoluteBoundingBox parent, IAbsoluteBoundingBox node)
         {
             return new CGPoint(
-                node.absoluteBoundingBox.x - parent.absoluteBoundingBox.x,
-                node.absoluteBoundingBox.y - parent.absoluteBoundingBox.y
+                node.absoluteBoundingBox.X - parent.absoluteBoundingBox.X,
+                node.absoluteBoundingBox.Y - parent.absoluteBoundingBox.Y
             );
         }
 
-        public static void CreateConstraints(this NSView view, NSView parent, FigmaLayoutConstraint constraints, FigmaRectangle absoluteBoundingBox, FigmaRectangle absoluteBoundBoxParent)
+        public static void CreateConstraints(this NSView view, NSView parent, FigmaLayoutConstraint constraints, Rectangle absoluteBoundingBox, Rectangle absoluteBoundBoxParent)
         {
             System.Console.WriteLine("Create constraint  horizontal:{0} vertical:{1}", constraints.horizontal, constraints.vertical);
 
             if (constraints.horizontal.Contains("RIGHT"))
             {
-                var endPosition1 = absoluteBoundingBox.x + absoluteBoundingBox.width;
-                var endPosition2 = absoluteBoundBoxParent.x + absoluteBoundBoxParent.width;
+                var endPosition1 = absoluteBoundingBox.X + absoluteBoundingBox.Width;
+                var endPosition2 = absoluteBoundBoxParent.X + absoluteBoundBoxParent.Width;
                 var value = Math.Max(endPosition1, endPosition2) - Math.Min(endPosition1, endPosition2);
                 view.RightAnchor.ConstraintEqualToAnchor(parent.RightAnchor, -value).Active = true;
 
-                var value2 = absoluteBoundingBox.x - absoluteBoundBoxParent.x;
+                var value2 = absoluteBoundingBox.X - absoluteBoundBoxParent.X;
                 view.LeftAnchor.ConstraintEqualToAnchor(parent.LeftAnchor, value2).Active = true;
             }
 
             if (constraints.horizontal != "RIGHT")
             {
-                var value2 = absoluteBoundingBox.x - absoluteBoundBoxParent.x;
+                var value2 = absoluteBoundingBox.X - absoluteBoundBoxParent.X;
                 view.LeftAnchor.ConstraintEqualToAnchor(parent.LeftAnchor, value2).Active = true;
             }
 
             if (constraints.horizontal.Contains("BOTTOM"))
             {
-                var value = absoluteBoundingBox.y - absoluteBoundBoxParent.y;
+                var value = absoluteBoundingBox.Y - absoluteBoundBoxParent.Y;
                 view.TopAnchor.ConstraintEqualToAnchor(parent.TopAnchor, value).Active = true;
 
-                var endPosition1 = absoluteBoundingBox.y + absoluteBoundingBox.height;
-                var endPosition2 = absoluteBoundBoxParent.y + absoluteBoundBoxParent.height;
+                var endPosition1 = absoluteBoundingBox.Y + absoluteBoundingBox.Height;
+                var endPosition2 = absoluteBoundBoxParent.Y + absoluteBoundBoxParent.Height;
                 var value2 = Math.Max(endPosition1, endPosition2) - Math.Min(endPosition1, endPosition2);
 
                 view.BottomAnchor.ConstraintEqualToAnchor(parent.BottomAnchor, -value2).Active = true;
@@ -296,81 +251,10 @@ namespace FigmaSharp.Cocoa
 
             if (constraints.horizontal != "BOTTOM")
             {
-                var value = absoluteBoundingBox.y - absoluteBoundBoxParent.y;
+                var value = absoluteBoundingBox.Y - absoluteBoundBoxParent.Y;
                 view.TopAnchor.ConstraintEqualToAnchor(parent.TopAnchor, value).Active = true;
             }
         }
-
-        static int[] app_kit_font_weights = {
-            2,   // FontWeight100
-      3,   // FontWeight200
-      4,   // FontWeight300
-      5,   // FontWeight400
-      6,   // FontWeight500
-      8,   // FontWeight600
-      9,   // FontWeight700
-      10,  // FontWeight800
-      12,  // FontWeight900
-            };
-
-        public static int ToAppKitFontWeight(float font_weight)
-        {
-            float weight = font_weight;
-            if (weight <= 50 || weight >= 950)
-                return 5;
-
-            var select_weight = (int)Math.Round(weight / 100) - 1;
-            return app_kit_font_weights[select_weight];
-        }
-
-        //TODO: we should move this to a shared place
-        public static CGPath ToCGPath(this NSBezierPath path)
-        {
-            var numElements = path.ElementCount;
-            if (numElements == 0)
-            {
-                return null;
-            }
-
-            CGPath result = new CGPath();
-            bool didClosePath = true;
-
-
-            for (int i = 0; i < numElements; i++)
-            {
-                CGPoint[] points;
-                var element = path.ElementAt(i, out points);
-                if (element == NSBezierPathElement.MoveTo)
-                {
-                    result.MoveToPoint(points[0].X, points[0].Y);
-                }
-                else if (element == NSBezierPathElement.LineTo)
-                {
-                    result.AddLineToPoint(points[0].X, points[0].Y);
-                    didClosePath = false;
-
-                }
-                else if (element == NSBezierPathElement.CurveTo)
-                {
-                    result.AddCurveToPoint(points[0].X, points[0].Y,
-                                            points[1].X, points[1].Y,
-                                            points[2].X, points[2].Y);
-                    didClosePath = false;
-                }
-                else if (element == NSBezierPathElement.ClosePath)
-                {
-                    result.CloseSubpath();
-                }
-            }
-
-            // Be sure the path is closed or Quartz may not do valid hit detection.
-            if (!didClosePath)
-            {
-                result.CloseSubpath();
-            }
-            return result;
-        }
-
 
         #endregion
 

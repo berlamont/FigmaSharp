@@ -97,15 +97,21 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms.Forms\LiteForms.Forms.csproj">
+      <Project>{F19B482F-54CC-4B84-9B82-865121D1A519}</Project>
+      <Name>LiteForms.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms\LiteForms.csproj">
+      <Project>{36AA8FA7-5055-44CB-956E-C2F376050BB4}</Project>
+      <Name>LiteForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj">
+      <Project>{BBA9C065-23F5-47AB-80D8-CC51CBF3CF93}</Project>
+      <Name>FigmaSharp.Forms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\FigmaSharp\FigmaSharp.csproj">
       <Project>{AD306162-8DAD-4DBD-B264-BDA8765CC107}</Project>
       <Name>FigmaSharp</Name>
-      <ReferenceSourceTarget></ReferenceSourceTarget>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj">
-      <Project>{2E4FA124-6026-4034-9BFC-760E39E08D3B}</Project>
-      <Name>FigmaSharp.Forms</Name>
-      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\LocalFile.Shared\LocalFile.Shared.projitems" Label="Shared" Condition="Exists('..\LocalFile.Shared\LocalFile.Shared.projitems')" />

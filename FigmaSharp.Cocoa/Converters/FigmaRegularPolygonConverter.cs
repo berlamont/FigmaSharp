@@ -29,19 +29,24 @@ using AppKit;
 using FigmaSharp.Converters;
 
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
+using LiteForms.Cocoa;
+using LiteForms.Graphics.Mac;
 
 namespace FigmaSharp.Cocoa.Converters
 {
     public class FigmaRegularPolygonConverter : FigmaRegularPolygonConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var currengroupView = new NSImageView();
+			var vector = new ImageView();
+			var currengroupView = (FNSImageView)vector.NativeObject;
             currengroupView.Configure((FigmaRegularPolygon)currentNode);
-            return new ImageViewWrapper(currengroupView);
+            return vector;
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             return string.Empty;
         }

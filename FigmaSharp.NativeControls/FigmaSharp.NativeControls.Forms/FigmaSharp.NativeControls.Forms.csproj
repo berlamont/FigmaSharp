@@ -8,7 +8,10 @@
     <PackageReference Include="Xamarin.Forms" Version="4.0.0.394984-pre10" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj" />
+    <ProjectReference Include="..\..\FigmaSharp\FigmaSharp.csproj" />
+    <ProjectReference Include="..\..\external\LiteForms\LiteForms.Forms\LiteForms.Forms.csproj" />
+    <ProjectReference Include="..\..\external\LiteForms\LiteForms\LiteForms.csproj" />
     <ProjectReference Include="..\FigmaSharp.NativeControls\FigmaSharp.NativeControls.csproj" />
+    <ProjectReference Include="..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj" />
   </ItemGroup>
 </Project>

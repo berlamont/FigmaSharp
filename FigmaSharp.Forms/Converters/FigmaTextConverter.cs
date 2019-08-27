@@ -30,22 +30,24 @@ using System;
 using System.Text;
 using FigmaSharp.Converters;
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
 
 namespace FigmaSharp.Forms.Converters
 {
     public class FigmaTextConverter : FigmaTextConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
             var figmaText = ((FigmaText)currentNode);
             var font = figmaText.style.ToFont();
             var textField = FigmaViewsHelper.CreateLabel(figmaText.characters, font);
             textField.Configure(figmaText);
-            var wrapper = new ViewWrapper(textField);
+            var wrapper = new LiteForms.Forms.View (textField);
             return wrapper;
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             return string.Empty;
         }
