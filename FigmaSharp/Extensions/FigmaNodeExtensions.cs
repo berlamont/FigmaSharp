@@ -32,33 +32,70 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-
+using LiteForms;
 using FigmaSharp.Models;
 
 namespace FigmaSharp
 {
+	public static class FigmaServiceExtensions
+	{
+		public static T FindNativeViewByName<T>(this Services.FigmaRendererService rendererService, string name)
+		{
+			foreach (var node in rendererService.NodesProcessed)
+			{
+				if (node.View.NativeObject is T && node.FigmaNode.name == name)
+				{
+					return (T)node.View.NativeObject;
+				}
+			}
+			return default(T);
+		}
+
+		public static IEnumerable<T> FindNativeViewsByName<T>(this Services.FigmaRendererService rendererService, string name)
+		{
+			foreach (var node in rendererService.NodesProcessed)
+			{
+				if (node.View.NativeObject is T && node.FigmaNode.name == name)
+				{
+					yield return (T)node.View.NativeObject;
+				}
+			}
+		}
+
+		public static IEnumerable<T> FindNativeViewsStartsWith<T>(this Services.FigmaRendererService rendererService, string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
+		{
+			foreach (var node in rendererService.NodesProcessed)
+			{
+				if (node.View.NativeObject is T && node.FigmaNode.name.StartsWith(name, stringComparison))
+				{
+					yield return (T)node.View.NativeObject;
+				}
+			}
+		}
+	}
+
     public static class FigmaNodeExtensions
     {
         public static void CalculateBounds(this IFigmaNodeContainer figmaNodeContainer)
         {
             if (figmaNodeContainer is IAbsoluteBoundingBox calculatedBounds)
             {
-                calculatedBounds.absoluteBoundingBox = FigmaRectangle.Zero;
+                calculatedBounds.absoluteBoundingBox = Rectangle.Zero;
                 foreach (var item in figmaNodeContainer.children)
                 {
                     if (item is IAbsoluteBoundingBox itmBoundingBox)
                     {
-                        calculatedBounds.absoluteBoundingBox.x = Math.Min(calculatedBounds.absoluteBoundingBox.x, itmBoundingBox.absoluteBoundingBox.x);
-                        calculatedBounds.absoluteBoundingBox.y = Math.Min(calculatedBounds.absoluteBoundingBox.y, itmBoundingBox.absoluteBoundingBox.y);
+                        calculatedBounds.absoluteBoundingBox.X = Math.Min(calculatedBounds.absoluteBoundingBox.X, itmBoundingBox.absoluteBoundingBox.X);
+                        calculatedBounds.absoluteBoundingBox.Y = Math.Min(calculatedBounds.absoluteBoundingBox.Y, itmBoundingBox.absoluteBoundingBox.Y);
 
-                        if (itmBoundingBox.absoluteBoundingBox.x + itmBoundingBox.absoluteBoundingBox.width > calculatedBounds.absoluteBoundingBox.x + calculatedBounds.absoluteBoundingBox.width)
+                        if (itmBoundingBox.absoluteBoundingBox.X + itmBoundingBox.absoluteBoundingBox.Width > calculatedBounds.absoluteBoundingBox.X + calculatedBounds.absoluteBoundingBox.Width)
                         {
-                            calculatedBounds.absoluteBoundingBox.width += (itmBoundingBox.absoluteBoundingBox.x + itmBoundingBox.absoluteBoundingBox.width) - (calculatedBounds.absoluteBoundingBox.x + calculatedBounds.absoluteBoundingBox.width);
+                            calculatedBounds.absoluteBoundingBox.Width += (itmBoundingBox.absoluteBoundingBox.X + itmBoundingBox.absoluteBoundingBox.Width) - (calculatedBounds.absoluteBoundingBox.X + calculatedBounds.absoluteBoundingBox.Width);
                         }
 
-                        if (itmBoundingBox.absoluteBoundingBox.y + itmBoundingBox.absoluteBoundingBox.height > calculatedBounds.absoluteBoundingBox.y + calculatedBounds.absoluteBoundingBox.height)
+                        if (itmBoundingBox.absoluteBoundingBox.Y + itmBoundingBox.absoluteBoundingBox.Height > calculatedBounds.absoluteBoundingBox.Y + calculatedBounds.absoluteBoundingBox.Height)
                         {
-                            calculatedBounds.absoluteBoundingBox.height += (itmBoundingBox.absoluteBoundingBox.y + itmBoundingBox.absoluteBoundingBox.height) - (calculatedBounds.absoluteBoundingBox.y + calculatedBounds.absoluteBoundingBox.height);
+                            calculatedBounds.absoluteBoundingBox.Height += (itmBoundingBox.absoluteBoundingBox.Y + itmBoundingBox.absoluteBoundingBox.Height) - (calculatedBounds.absoluteBoundingBox.Y + calculatedBounds.absoluteBoundingBox.Height);
                         }
                     }
                 }

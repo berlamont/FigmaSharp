@@ -25,22 +25,25 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-using System;
+using System.Text;
 using FigmaSharp.Converters;
+using Xamarin.Forms;
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
 
 namespace FigmaSharp.Forms.Converters
 {
     public class FigmaVectorViewConverter : FigmaVectorViewConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var vector = ((FigmaVector)currentNode);
-            Console.WriteLine(vector);
-            return null;
+			var currengroupView = new Image();
+			currengroupView.Configure((FigmaVector)currentNode);
+			return new LiteForms.Forms.ImageView(currengroupView);
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             return string.Empty;
         }

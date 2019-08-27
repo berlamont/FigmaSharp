@@ -32,6 +32,7 @@ using System.ComponentModel;
 using System.Text;
 using Newtonsoft.Json;
 using System.Linq;
+using LiteForms;
 
 namespace FigmaSharp.Models
 {
@@ -72,7 +73,7 @@ namespace FigmaSharp.Models
         
     }
 
-    public class FigmaRectangleVector : FigmaVectorEntity
+    public class RectangleVector : FigmaVectorEntity
     {
         public float cornerRadius { get; set; }
         public float[] rectangleCornerRadii { get; set; }
@@ -92,9 +93,9 @@ namespace FigmaSharp.Models
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public float opacity { get; set; }
 
-        public FigmaColor color { get; set; }
+        public Color color { get; set; }
         public FigmaVector[] gradientHandlePositions { get; set; }
-        public FigmaColorStop[] gradientStops { get; set; }
+        public ColorStop[] gradientStops { get; set; }
         public string scaleMode { get; set; }
         public FigmaTransform imageTrandform { get; set; }
 
@@ -102,7 +103,7 @@ namespace FigmaSharp.Models
         public string imageRef { get; set; }
     }
 
-    public class FigmaColorStop
+    public class ColorStop
     {
     }
 
@@ -117,14 +118,6 @@ namespace FigmaSharp.Models
         public string suffix { get; set; }
         public string format { get; set; }
         public FigmaConstraint constraint { get; set; }
-    }
-
-    public class FigmaColor
-    {
-        public float r { get; set; }
-        public float g { get; set; }
-        public float b { get; set; }
-        public float a { get; set; }
     }
 
     public enum FigmaEasingType
@@ -176,7 +169,7 @@ namespace FigmaSharp.Models
    
 	public interface IFigmaDocumentContainer : IFigmaNodeContainer, IAbsoluteBoundingBox
 	{
-		FigmaColor backgroundColor { get; set; }
+		Color backgroundColor { get; set; }
     }
 
     public class FigmaBackground
@@ -184,12 +177,12 @@ namespace FigmaSharp.Models
         public string type { get; set; }
         public string blendMode { get; set; }
 
-        public FigmaColor color { get; set; }
+        public Color color { get; set; }
     }
 
     public class FigmaSlice : FigmaNode, IAbsoluteBoundingBox, IConstraints
     {
-        public FigmaRectangle absoluteBoundingBox { get; set; }
+        public Rectangle absoluteBoundingBox { get; set; }
 
         public FigmaLayoutConstraint constraints { get; set; }
     }
@@ -201,7 +194,7 @@ namespace FigmaSharp.Models
             return false;
         }
 
-        public FigmaColor backgroundColor { get; set; }
+        public Color backgroundColor { get; set; }
         public FigmaExportSetting[] exportSettings { get; set; }
         public string blendMode { get; set; }
         public bool preserveRatio { get; set; }
@@ -218,7 +211,7 @@ namespace FigmaSharp.Models
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public float opacity { get; set; }
 
-        public FigmaRectangle absoluteBoundingBox { get; set; }
+        public Rectangle absoluteBoundingBox { get; set; }
         public FigmaVector size { get; set; }
         public FigmaTransform relativeTransform { get; set; }
         public bool clipsContent { get; set; }
@@ -236,7 +229,7 @@ namespace FigmaSharp.Models
 
     public interface IAbsoluteBoundingBox
     {
-        FigmaRectangle absoluteBoundingBox { get; set; }
+        Rectangle absoluteBoundingBox { get; set; }
     }
 
     public interface IConstraints
@@ -269,7 +262,7 @@ namespace FigmaSharp.Models
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public float opacity { get; set; }
 
-        public FigmaRectangle absoluteBoundingBox { get; set; }
+        public Rectangle absoluteBoundingBox { get; set; }
         public FigmaEffect[] effects { get; set; }
         public FigmaVector size { get; set; }
         public FigmaTransform relativeTransform { get; set; }
@@ -319,7 +312,7 @@ namespace FigmaSharp.Models
         public bool visible { get; set; }
 
         public float radius { get; set; }
-        public FigmaColor color { get; set; }
+        public Color color { get; set; }
         public FigmaBlendMode blendMode { get; set; }
         public FigmaVector offset { get; set; }
     }
@@ -327,11 +320,11 @@ namespace FigmaSharp.Models
     public class FigmaCanvas : FigmaNode, IFigmaDocumentContainer
     {
         public FigmaPaint[] background { get; set; }
-        public FigmaColor backgroundColor { get; set; }
+        public Color backgroundColor { get; set; }
         public string prototypeStartNodeID { get; set; }
         public FigmaExportSetting[] exportSettings { get; set; }
         public FigmaNode[] children { get; set; }
-		public FigmaRectangle absoluteBoundingBox { get; set; }
+		public Rectangle absoluteBoundingBox { get; set; }
 	}
 
 	public class FigmaLayoutConstraint
@@ -349,60 +342,11 @@ namespace FigmaSharp.Models
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool visible { get; set; }
 
-        public FigmaColor color { get; set; }
+        public Color color { get; set; }
         public string aligment { get; set; }
         public int gutterSize { get; set; }
         public int offset { get; set; }
         public int count { get; set; }
-    }
-
-	public class FigmaRectangle : IEquatable<FigmaRectangle>
-	{
-		public float x { get; set; }
-		public float y { get; set; }
-		public float width { get; set; }
-		public float height { get; set; }
-
-		public static FigmaRectangle Zero { get; set; } = new FigmaRectangle { x=0,y =0,width =0,height= 0 };
-
-        public FigmaRectangle ()
-        {
-
-        }
-
-        public FigmaRectangle(float x, float y, float width, float height)
-        {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
-
-        public FigmaRectangle UnionWith (FigmaRectangle allocation)
-        {
-            //TODO: improve
-            float xMin = Math.Min(x, allocation.x);
-            float yMin = Math.Min(y, allocation.y);
-            float xMax = Math.Max(x + width, allocation.x + allocation.width);
-            float yMax = Math.Max(y + height, allocation.y + allocation.height);
-            return new FigmaRectangle(xMin, yMin, xMax - xMin, yMax - yMin);
-        }
-
-        public bool Equals(FigmaRectangle other)
-        {
-            if (x != other.x || y != other.y || width != other.width || height != other.height)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (!(obj is FigmaRectangle)) return false;
-            return Equals((FigmaRectangle)obj);
-        }
     }
 
     public class FigmaDocument : FigmaNode
@@ -413,7 +357,7 @@ namespace FigmaSharp.Models
     public class ProcessedNode
     {
         public FigmaNode FigmaNode { get; set; }
-        public IViewWrapper View { get; set; }
+        public IView View { get; set; }
         public ProcessedNode ParentView { get; set; }
 
         public override string ToString() =>

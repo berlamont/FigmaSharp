@@ -1,4 +1,5 @@
 ﻿using Xamarin.Forms;
+using LiteForms.Forms;
 
 namespace BasicRendering.Forms
 {
@@ -9,9 +10,9 @@ namespace BasicRendering.Forms
             InitializeComponent();
 
             MainPage = new MainPage();
-        }
+		}
 
-        protected override void OnStart()
+		protected override void OnStart()
         {
             // Handle when your app starts
         }

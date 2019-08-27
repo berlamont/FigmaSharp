@@ -30,20 +30,23 @@ using AppKit;
 
 using FigmaSharp.Converters;
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
+using LiteForms.Cocoa;
 
 namespace FigmaSharp.Cocoa.Converters
 {
     public class FigmaFrameEntityConverter : FigmaFrameEntityConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var currengroupView = new NSImageView();
+            var currengroupView = new FNSImageView();
             var figmaFrameEntity = (FigmaFrameEntity)currentNode;
             currengroupView.Configure(figmaFrameEntity);
-            return new ImageViewWrapper(currengroupView);
+            return new ImageView(currengroupView);
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             var figmaFrameEntity = (FigmaFrameEntity)currentNode;
             StringBuilder builder = new StringBuilder();

@@ -55,7 +55,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
-   <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />    
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -77,7 +77,6 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
@@ -93,6 +92,14 @@
     <ProjectReference Include="..\..\..\FigmaSharp.Cocoa\FigmaSharp.Cocoa.csproj">
       <Project>{C16867FC-93FC-4E4C-B4DF-6F40D9615E01}</Project>
       <Name>FigmaSharp.Cocoa</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms\LiteForms.csproj">
+      <Project>{36AA8FA7-5055-44CB-956E-C2F376050BB4}</Project>
+      <Name>LiteForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms.Cocoa\LiteForms.Cocoa.csproj">
+      <Project>{3E0633F6-BD50-4D09-8601-A143F6CFDD44}</Project>
+      <Name>LiteForms.Cocoa</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\BasicRendering.Shared\BasicRendering.Shared.projitems" Label="Shared" Condition="Exists('..\BasicRendering.Shared\BasicRendering.Shared.projitems')" />

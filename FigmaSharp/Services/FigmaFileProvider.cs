@@ -35,6 +35,7 @@ using System.Threading;
 using FigmaSharp.Models;
 using FigmaSharp.Converters;
 using System.IO;
+using LiteForms;
 
 namespace FigmaSharp.Services
 {
@@ -49,6 +50,9 @@ namespace FigmaSharp.Services
         void Save(string filePath);
         string GetContentTemplate(string file);
         void OnStartImageLinkProcessing(List<ProcessedNode> imageVectors);
+
+		FigmaNode FindByPath(params string[] path);
+        FigmaNode FindByName(string nodeName);
     }
 
     public class FigmaLocalFileProvider : FigmaFileProvider
@@ -86,10 +90,10 @@ namespace FigmaSharp.Services
                             throw new FileNotFoundException(filePath);
                         }
                       
-                        if (vector.View is IImageViewWrapper imageView)
+                        if (vector.View is IImageView imageView)
                         {
                             var image = AppContext.Current.GetImageFromFilePath(filePath);
-                            imageView.SetImage(image);
+                            imageView.Image = image;
                         }
                     }
                     catch (FileNotFoundException ex)
@@ -128,6 +132,100 @@ namespace FigmaSharp.Services
             }
         }
 
+		void ProcessRemoteImages (List<ProcessedNode> imageFigmaNodes, ImageQueryFormat imageFormat)
+		{
+			try
+			{
+				var totalImages = imageFigmaNodes.Count();
+				//TODO: figma url has a limited character in urls we fixed the limit to 10 ids's for each call
+				var numberLoop = (totalImages / CallNumber) + 1;
+
+				//var imageCache = new Dictionary<string, List<string>>();
+				List<Tuple<string, List<string>>> imageCacheResponse = new List<Tuple<string, List<string>>>();
+				Console.WriteLine("Detected a total of {0} possible {1} images.  ", totalImages, imageFormat);
+
+				var images = new List<string>();
+				for (int i = 0; i < numberLoop; i++)
+				{
+					var vectors = imageFigmaNodes.Skip(i * CallNumber).Take(CallNumber);
+					Console.WriteLine("[{0}/{1}] Processing Images ... {2} ", i, numberLoop, vectors.Count());
+					var figmaImageResponse = FigmaApiHelper.GetFigmaImages(File, vectors.Select(s => s.FigmaNode.id), imageFormat);
+					if (figmaImageResponse != null)
+					{
+						foreach (var image in figmaImageResponse.images)
+						{
+							if (image.Value == null)
+							{
+								continue;
+							}
+
+							var img = imageCacheResponse.FirstOrDefault(s => image.Value == s.Item1);
+							if (img?.Item1 != null)
+							{
+								img.Item2.Add(image.Key);
+							}
+							else
+							{
+								imageCacheResponse.Add(new Tuple<string, List<string>>(image.Value, new List<string>() { image.Key }));
+							}
+						}
+					}
+				}
+
+				//get images not dupplicates
+				Console.WriteLine("Finished image to download {0}", images.Count);
+
+				if (imageFormat == ImageQueryFormat.svg)
+				{
+					//with all the keys now we get the dupplicated images
+					foreach (var imageUrl in imageCacheResponse)
+					{
+						var image = FigmaApiHelper.GetUrlContent(imageUrl.Item1);
+
+						foreach (var figmaNodeId in imageUrl.Item2)
+						{
+							var vector = imageFigmaNodes.FirstOrDefault(s => s.FigmaNode.id == figmaNodeId);
+							Console.Write("[{0}:{1}:{2}] {3}...", vector.FigmaNode.GetType(), vector.FigmaNode.id, vector.FigmaNode.name, imageUrl);
+
+							if (vector != null && vector.View is LiteForms.Graphics.ISvgShapeView imageView) {
+								AppContext.Current.BeginInvoke(() => {
+									imageView.Load(image);
+								});
+							}
+							Console.Write("OK \n");
+						}
+					}
+				} else {
+					//with all the keys now we get the dupplicated images
+					foreach (var imageUrl in imageCacheResponse)
+					{
+						var Image = AppContext.Current.GetImage(imageUrl.Item1);
+						foreach (var figmaNodeId in imageUrl.Item2)
+						{
+							var vector = imageFigmaNodes.FirstOrDefault(s => s.FigmaNode.id == figmaNodeId);
+							Console.Write("[{0}:{1}:{2}] {3}...", vector.FigmaNode.GetType(), vector.FigmaNode.id, vector.FigmaNode.name, imageUrl);
+
+							if (vector != null) {
+								AppContext.Current.BeginInvoke(() => {
+									if (vector.View is IImageView imageView) {
+										imageView.Image = Image;
+									}
+									else if(vector.View is IImageButton imageButton) {
+										imageButton.Image = Image;
+									}
+								});
+							}
+							Console.Write("OK \n");
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
+		}
+
         public override void OnStartImageLinkProcessing(List<ProcessedNode> imageFigmaNodes)
         {
             if (imageFigmaNodes.Count == 0)
@@ -138,76 +236,14 @@ namespace FigmaSharp.Services
 
             Task.Run(() => {
 
-                try
-                {
-                    var totalImages = imageFigmaNodes.Count();
-                    //TODO: figma url has a limited character in urls we fixed the limit to 10 ids's for each call
-                    var numberLoop = (totalImages / CallNumber) + 1;
+				var images = imageFigmaNodes.Where(s => s.View is LiteForms.Graphics.ISvgShapeView).ToList ();
+				ProcessRemoteImages(images, ImageQueryFormat.svg);
 
-                    //var imageCache = new Dictionary<string, List<string>>();
-                    List<Tuple<string, List<string>>> imageCacheResponse = new List<Tuple<string, List<string>>>();
-                    Console.WriteLine("Detected a total of {0} possible images.  ", totalImages);
+				images = imageFigmaNodes.Where(s => !(s.View is LiteForms.Graphics.ISvgShapeView)).ToList();
+				ProcessRemoteImages(images, ImageQueryFormat.png);
 
-                    var images = new List<string>();
-                    for (int i = 0; i < numberLoop; i++)
-                    {
-                        var vectors = imageFigmaNodes.Skip(i * CallNumber).Take(CallNumber);
-                        Console.WriteLine("[{0}/{1}] Processing Images ... {2} ", i, numberLoop, vectors.Count());
-                        var figmaImageResponse = FigmaApiHelper.GetFigmaImages(File, vectors.Select(s => s.FigmaNode.id));
 
-                        if (figmaImageResponse != null)
-                        {
-                            foreach (var image in figmaImageResponse.images)
-                            {
-                                if (image.Value == null)
-                                {
-                                    continue;
-                                }
-
-                                var img = imageCacheResponse.FirstOrDefault(s => image.Value == s.Item1);
-                                if (img?.Item1 != null)
-                                {
-                                    img.Item2.Add(image.Key);
-                                }
-                                else
-                                {
-                                    imageCacheResponse.Add(new Tuple<string, List<string>>(image.Value, new List<string>() { image.Key }));
-                                }
-                            }
-                        }
-                    }
-
-                    Console.WriteLine("Removing dupplicates...");
-
-                    //get images not dupplicates
-                    Console.WriteLine("Finished image to download {0}", images.Count);
-
-                    //with all the keys now we get the dupplicated images
-                    foreach (var imageUrl in imageCacheResponse)
-                    {
-                        var imageWrapper = AppContext.Current.GetImage(imageUrl.Item1);
-                        foreach (var figmaNodeId in imageUrl.Item2)
-                        {
-                            var vector = imageFigmaNodes.FirstOrDefault(s => s.FigmaNode.id == figmaNodeId);
-                            Console.Write("[{0}:{1}:{2}] {3}...", vector.FigmaNode.GetType(), vector.FigmaNode.id, vector.FigmaNode.name, imageUrl);
-
-                            if (vector != null && vector.View is IImageViewWrapper imageView)
-                            {
-                                AppContext.Current.BeginInvoke(() =>
-                                {
-                                    imageView.SetImage(imageWrapper);
-                                });
-                            }
-                            Console.Write("OK \n");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
-               
-                OnImageLinkProcessed();
+				OnImageLinkProcessed();
             });
         }
         const int CallNumber = 250;
@@ -237,9 +273,9 @@ namespace FigmaSharp.Services
                 {
                     var recoveredKey = FigmaResourceConverter.FromResource(vector.FigmaNode.id);
                     var image = AppContext.Current.GetImageFromManifest(Assembly, recoveredKey);
-                    if (image != null && vector.View is IImageViewWrapper imageView)
+                    if (image != null && vector.View is IImageView imageView)
                     {
-                        imageView.SetImage(image);
+                        imageView.Image = image;
                     }
                 }
             }
@@ -279,12 +315,12 @@ namespace FigmaSharp.Services
 
                 var contentTemplate = GetContentTemplate(file);
 
+				//parse the json into a model format
                 Response = AppContext.Current.GetFigmaResponseFromContent(contentTemplate);
 
+				//proceses all the views recursively
                 foreach (var item in Response.document.children)
-                {
                     ProcessNodeRecursively(item, null);
-                }
             }
             catch (System.Net.WebException ex)
             {
@@ -302,6 +338,37 @@ namespace FigmaSharp.Services
             }
         }
 
+		/// <summary>
+		/// Finds a node using the path of the views, returns null in case of no data
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public FigmaNode FindByPath(params string[] path)
+		{
+			if (path.Length == 0)
+			{
+				return null;
+			}
+
+			FigmaNode figmaNode = null;
+			for (int i = 0; i < path.Length; i++)
+			{
+				if (i == 0)
+					figmaNode = Nodes.FirstOrDefault(s => s.name == path[i]);
+				else
+					figmaNode = Nodes.FirstOrDefault(s => s.name == path[i] && s.Parent.id == figmaNode.id);
+
+				if (figmaNode == null)
+					return null;
+			}
+			return figmaNode;
+		}
+
+        public FigmaNode FindByName(string name)
+        {
+            return Nodes.FirstOrDefault(s => s.name == name);
+        }
+
         void ProcessNodeRecursively(FigmaNode node, FigmaNode parent)
         {
             node.Parent = parent;
@@ -310,9 +377,7 @@ namespace FigmaSharp.Services
             if (node is FigmaInstance instance)
             {
                 if (Response.components.TryGetValue(instance.componentId, out var figmaComponent))
-                {
                     instance.Component = figmaComponent;
-                }
             }
 
             if (node is IFigmaNodeContainer nodeContainer)

@@ -39,11 +39,9 @@ namespace FigmaSharp.Samples
         string token_message;
         string token_message_unsaved = "This token will be saved in your keychain.";
 
-
         public OpenLocationViewController(IntPtr handle) : base(handle)
         {
         }
-
 
         public override void ViewDidLoad()
         {
@@ -68,7 +66,6 @@ namespace FigmaSharp.Samples
             OpenButton.Enabled = CheckFormIsFilled();
         }
 
-
         void TokenTextFieldChanged(Object sender, EventArgs args)
         {
             string token_message = TokenStatusTextField.StringValue;
@@ -81,13 +78,11 @@ namespace FigmaSharp.Samples
             OpenButton.Enabled = CheckFormIsFilled();
         }
 
-
-        void LinkComboboxChanged(object sender, EventArgs args)
+		void LinkComboboxChanged(object sender, EventArgs args)
         {
             LinkComboBox.StringValue = FigmaLink.TryParseID(LinkComboBox.StringValue);
             OpenButton.Enabled = CheckFormIsFilled();
         }
-
 
         void OpenButtonActivated(Object sender, EventArgs args)
         {
@@ -95,29 +90,26 @@ namespace FigmaSharp.Samples
             PerformSegue("OpenLocationSegue", this);
         }
 
-
         public override void PrepareForSegue(NSStoryboardSegue segue, NSObject sender)
         {
             string token = TokenTextField.StringValue.Trim();
             TokenStore.SharedTokenStore.SetToken(token);
 
-            string link_id = LinkComboBox.StringValue.Trim();
+			string link_id = LinkComboBox.StringValue.Trim();
 
-            var document_window_controller = (DocumentWindowController) segue.DestinationController;
-            document_window_controller.LoadDocument(token, link_id);
+            var windowController = (DocumentWindowController) segue.DestinationController;
+			var contentController = (DocumentViewController) windowController.ContentViewController;
 
-            //document_window_controller.Window.WillClose += delegate {
-            //    View.Window.IsVisible = true;
-            //};
+			contentController.OnInitialize();
+
+			contentController.LoadDocument(token, link_id);
         }
-
 
         bool CheckFormIsFilled()
         {
             return (!string.IsNullOrWhiteSpace(LinkComboBox.StringValue) &&
                     !string.IsNullOrWhiteSpace(TokenTextField.StringValue));
         }
-
 
         public override NSObject RepresentedObject
         {

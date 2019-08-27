@@ -101,14 +101,13 @@ namespace FigmaSharp
             File.WriteAllText(filePath, data);
         }
 
-
-        public static FigmaImageResponse GetFigmaImages(string fileId, IEnumerable<string> ids)
+        public static FigmaImageResponse GetFigmaImages(string fileId, IEnumerable<string> ids, ImageQueryFormat format = ImageQueryFormat.png, float scale = 2)
         {
             var query = new FigmaImageQuery(AppContext.Current.Token, fileId, ids);
-			query.Scale = "2";
+			query.Scale = scale;
+			query.Format = format;
 			return GetFigmaImage(query);
         }
-
 
         public static FigmaImageResponse GetFigmaImage (FigmaImageQuery figmaQuery)
         {
@@ -157,16 +156,38 @@ namespace FigmaSharp
 
         public static string GetFigmaFileContent (string file, string personal_access_token)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create($"https://api.figma.com/v1/files/{file}");
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "GET";
-            httpWebRequest.Headers["x-figma-token"] = personal_access_token;
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-               return streamReader.ReadToEnd();
-            }
+			return GetUrlContent($"https://api.figma.com/v1/files/{file}", personal_access_token);
         }
-    }
+
+		public static string GetUrlContent(string url)
+		{
+			try
+			{
+				var wc = new System.Net.WebClient();
+				byte[] raw = wc.DownloadData(url);
+
+				string webData = System.Text.Encoding.UTF8.GetString(raw);
+				return webData;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
+			return string.Empty;
+		}
+
+		public static string GetUrlContent(string url, string personal_access_token)
+		{
+			var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+			httpWebRequest.ContentType = "application/json";
+			httpWebRequest.Method = "GET";
+			httpWebRequest.Headers["x-figma-token"] = personal_access_token;
+
+			var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+			using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+			{
+				return streamReader.ReadToEnd();
+			}
+		}
+	}
 }

@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Services\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1">
@@ -24,5 +25,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Services\ViewContentRendererService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\external\LiteForms\LiteForms\LiteForms.csproj" />
+    <ProjectReference Include="..\external\LiteForms\LiteForms.Graphics\LiteForms.Graphics.csproj" />
   </ItemGroup>
 </Project>

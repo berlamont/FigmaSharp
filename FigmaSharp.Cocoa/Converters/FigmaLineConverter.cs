@@ -30,20 +30,23 @@ using AppKit;
 
 using FigmaSharp.Converters;
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
+using LiteForms.Cocoa;
 
 namespace FigmaSharp.Cocoa.Converters
 {
     public class FigmaLineConverter : FigmaLineConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var figmaLineView = new NSImageView();
+            var figmaLineView = new FNSImageView();
             var figmaLine = (FigmaLine)currentNode;
             figmaLineView.Configure(figmaLine);
-            return new ImageViewWrapper(figmaLineView);
+            return new ImageView(figmaLineView);
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             StringBuilder builder = new StringBuilder();
             var name = "[NAME]";

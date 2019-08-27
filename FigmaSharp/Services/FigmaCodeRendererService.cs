@@ -59,7 +59,7 @@ namespace FigmaSharp.Services
 
             if (converter != null)
             {
-                var code = converter.ConvertToCode(node);
+                var code = converter.ConvertToCode(node, this);
 
                 if (name == null)
                 {

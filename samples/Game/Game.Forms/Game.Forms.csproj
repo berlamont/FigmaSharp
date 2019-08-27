@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="4.1.0.483098-pre1" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\FigmaSharp\FigmaSharp.csproj" />
+    <ProjectReference Include="..\..\..\FigmaSharp.Forms\FigmaSharp.Forms.csproj" />
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms\LiteForms.csproj" />
+    <ProjectReference Include="..\..\..\external\LiteForms\LiteForms.Forms\LiteForms.Forms.csproj" />
+  </ItemGroup>
+</Project>

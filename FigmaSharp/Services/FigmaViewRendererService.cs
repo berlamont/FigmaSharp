@@ -31,23 +31,36 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-
+using LiteForms;
 using FigmaSharp.Models;
 
 namespace FigmaSharp.Services
 {
     public class FigmaRendererService
     {
-        protected readonly FigmaViewConverter[] FigmaDefaultConverters;
-        protected readonly FigmaViewConverter[] FigmaCustomConverters;
+        protected readonly List<FigmaViewConverter> DefaultConverters;
+        public readonly List<FigmaViewConverter> CustomConverters;
 
         public List<ProcessedNode> NodesProcessed = new List<ProcessedNode>();
         public readonly List<ProcessedNode> ImageVectors = new List<ProcessedNode>();
 
-        protected IViewWrapper container;
+        protected IView container;
         protected IFigmaFileProvider fileProvider;
+        internal IFigmaFileProvider FileProvider => fileProvider;
 
-        public T FindViewByName<T>(string name) where T : IViewWrapper
+        public T FindViewStartsWith<T>(string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) where T : IView
+		{
+			foreach (var node in NodesProcessed)
+			{
+				if (node.View is T && node.FigmaNode.name.StartsWith(name, stringComparison))
+				{
+					return (T)node.View;
+				}
+			}
+			return default(T);
+		}
+		
+		public T FindViewByName<T>(string name) where T : IView
         {
             foreach (var node in NodesProcessed)
             {
@@ -59,7 +72,41 @@ namespace FigmaSharp.Services
             return default(T);
         }
 
-        public IViewWrapper FindViewByName(string name)
+		public T FindViewByPath<T>(params string[] path) where T : IView
+		{
+			var node = fileProvider.FindByPath(path);
+			if (node == null)
+				return default(T);
+			var processed = NodesProcessed.FirstOrDefault(s => s.FigmaNode == node);
+			if (processed == null)
+				return default(T);
+
+			return (T) processed.View;
+		}
+
+		public IEnumerable<T> FindViewsStartsWith<T>(string name, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
+		{
+			foreach (var node in NodesProcessed)
+			{
+				if (node.View is T && node.FigmaNode.name.StartsWith(name, stringComparison))
+				{
+					yield return (T)node.View;
+				}
+			}
+		}
+
+		public IEnumerable<T> FindViewsByName<T>(string name)
+		{
+			foreach (var node in NodesProcessed)
+			{
+				if (node.View is T && node.FigmaNode.name == name)
+				{
+					yield return (T)node.View;
+				}
+			}
+		}
+
+		public IView FindViewByName(string name)
         {
             foreach (var node in NodesProcessed)
             {
@@ -76,12 +123,22 @@ namespace FigmaSharp.Services
             return fileProvider.Nodes.FirstOrDefault(s => s.name == name);
         }
 
-        public ProcessedNode FindProcessedNodeByName(string name)
+		public FigmaNode FindNodeById(string id)
+		{
+			return fileProvider.Nodes.FirstOrDefault(s => s.id == id);
+		}
+
+		public ProcessedNode FindProcessedNodeByName(string name)
         {
             return NodesProcessed.FirstOrDefault(s => s.FigmaNode.name == name);
         }
 
-        FigmaNode GetRecursively (string name, FigmaNode figmaNode)
+		public ProcessedNode FindProcessedNodeById(string Id)
+		{
+			return NodesProcessed.FirstOrDefault(s => s.FigmaNode.id == Id);
+		}
+
+		FigmaNode GetRecursively (string name, FigmaNode figmaNode)
         {
             if (figmaNode.name == name)
             {
@@ -105,11 +162,11 @@ namespace FigmaSharp.Services
         public FigmaRendererService(IFigmaFileProvider figmaProvider, FigmaViewConverter[] figmaViewConverters)
         {
             this.fileProvider = figmaProvider;
-            FigmaDefaultConverters = figmaViewConverters.Where(s => s.IsLayer).ToArray();
-            FigmaCustomConverters = figmaViewConverters.Where(s => !s.IsLayer).ToArray();
+            DefaultConverters = figmaViewConverters.Where(s => s.IsLayer).ToList();
+            CustomConverters = figmaViewConverters.Where(s => !s.IsLayer).ToList();
         }
 
-        public void ProcessFromNode (FigmaNode figmaNode, IViewWrapper viewWrapper, FigmaViewRendererServiceOptions options)
+        public void ProcessFromNode (FigmaNode figmaNode, IView View, FigmaViewRendererServiceOptions options)
         {
             try
             {
@@ -117,10 +174,10 @@ namespace FigmaSharp.Services
                 if (figmaNode is FigmaCanvas canvas)
                 {
                     //var canvas = fileProvider.Response.document.children.FirstOrDefault();
-                    var processedParentView = new ProcessedNode() { FigmaNode = figmaNode, View = viewWrapper };
+                    var processedParentView = new ProcessedNode() { FigmaNode = figmaNode, View = View };
                     NodesProcessed.Add(processedParentView);
 
-                    FigmaRectangle contentRect = FigmaRectangle.Zero;
+                    Rectangle contentRect = Rectangle.Zero;
                     for (int i = 0; i < canvas.children.Length; i++)
                     {
                         if (canvas.children[i] is IAbsoluteBoundingBox box)
@@ -157,8 +214,7 @@ namespace FigmaSharp.Services
                         if (processedNode.FigmaNode is IFigmaImage figmaImage)
                         {
                             //TODO: this should be replaced by svg
-                            if (figmaImage.HasImage())
-                            {
+                            if (figmaImage.HasImage()) {
                                 ImageVectors.Add(processedNode);
                             }
                         }
@@ -194,7 +250,7 @@ namespace FigmaSharp.Services
             Console.WriteLine($"Image Links ended.");
         }
 
-        protected CustomViewConverter GetProcessedConverter(FigmaNode currentNode, IEnumerable<CustomViewConverter> customViewConverters, ProcessedNode parent, FigmaViewRendererServiceOptions options)
+        protected CustomViewConverter GetProcessedConverter(FigmaNode currentNode, IEnumerable<CustomViewConverter> customViewConverters)
         {
             foreach (var customViewConverter in customViewConverters)
             {
@@ -213,17 +269,17 @@ namespace FigmaSharp.Services
 
             bool scanChildren = true;
 
-            var converter = GetProcessedConverter(currentNode, FigmaCustomConverters, parent, options);
+            var converter = GetProcessedConverter(currentNode, CustomConverters);
 
             if (converter == null)
             {
-                converter = GetProcessedConverter(currentNode, FigmaDefaultConverters, parent, options);
+                converter = GetProcessedConverter(currentNode, DefaultConverters);
             }
 
             ProcessedNode currentProcessedNode = null;
             if (converter != null)
             {
-                var currentView = options.IsToViewProcessed ? converter.ConvertTo(currentNode, parent) : null;
+                var currentView = options.IsToViewProcessed ? converter.ConvertTo(currentNode, parent, this) : null;
                 currentProcessedNode = new ProcessedNode() { FigmaNode = currentNode, View = currentView, ParentView = parent };
                 NodesProcessed.Add(currentProcessedNode);
 
@@ -246,19 +302,20 @@ namespace FigmaSharp.Services
         }
     }
 
-    public class FigmaFileRendererService : FigmaRendererService
+	[Obsolete("Use FigmaViewRendererService instead")]
+	public class FigmaFileRendererService : FigmaRendererService
     {
         public FigmaFileRendererService(IFigmaFileProvider figmaProvider, FigmaViewConverter[] figmaViewConverters) : base (figmaProvider, figmaViewConverters)
         {
         }
 
-        public Task StartAsync(string file, IViewWrapper container) => StartAsync(file, container, new FigmaViewRendererServiceOptions());
-        public Task StartAsync(string file, IViewWrapper container, FigmaViewRendererServiceOptions options) => Task.Run(() => Start(file, container, options: options));
+        public Task StartAsync(string file, IView container) => StartAsync(file, container, new FigmaViewRendererServiceOptions());
+        public Task StartAsync(string file, IView container, FigmaViewRendererServiceOptions options) => Task.Run(() => Start(file, container, options: options));
 
-        public void Start(string file, IViewWrapper container) =>
+        public void Start(string file, IView container) =>
             Start(file, container, new FigmaViewRendererServiceOptions());
 
-        public void Start(string file, IViewWrapper container, FigmaViewRendererServiceOptions options)
+        public void Start(string file, IView container, FigmaViewRendererServiceOptions options)
         {
             Console.WriteLine("[FigmaRemoteFileService] Starting service process..");
             Console.WriteLine($"Reading {file} from resources..");
@@ -287,53 +344,92 @@ namespace FigmaSharp.Services
         {
         }
 
-        public T RenderByName<T>(string figmaName) where T : IViewWrapper
+		public T RenderByPath<T>(FigmaViewRendererServiceOptions options, params string[] path) where T : IView
+		{
+			FigmaNode node = fileProvider.FindByPath(path);
+			if (node == null)
+				return default(T);
+			return (T)RenderFigmaNode(node, options);
+		}
+
+		public IView RenderFigmaNode (FigmaNode node, FigmaViewRendererServiceOptions options)
+		{
+			ProcessFromNode (node, null, options);
+			var processedNode = FindProcessedNodeById(node.id);
+			Recursively(processedNode);
+			return processedNode.View;
+		}
+
+		public T RenderByNode<T>(FigmaNode node) where T : IView
+		{
+			return RenderByNode<T>(node, new FigmaViewRendererServiceOptions());
+		}
+
+		public T RenderByNode<T>(FigmaNode node, FigmaViewRendererServiceOptions options) where T : IView
+		{
+			return (T)RenderFigmaNode(node, options);
+		}
+
+		public T RenderByName<T>(string figmaName) where T : IView
         {
             return RenderByName <T>(figmaName, new FigmaViewRendererServiceOptions());
         }
 
-        public T RenderByName<T>(string figmaName, FigmaViewRendererServiceOptions options) where T: IViewWrapper
+        public T RenderByName<T>(string figmaName, FigmaViewRendererServiceOptions options) where T: IView
         {
             var node = FindNodeByName(figmaName);
             if (node == null)
                 return default (T);
-            ProcessFromNode (node, null, options);
-
-            var processedNode = FindProcessedNodeByName(figmaName);
-            Recursively(processedNode);
-            return (T) processedNode.View;
-        }
+			return (T)RenderFigmaNode(node, options);
+		}
 
         void Recursively(ProcessedNode parentNode)
         {
             var children = NodesProcessed.Where(s => s.ParentView == parentNode);
             foreach (var child in children)
             {
+                if (child.View == null)
+                {
+                    Console.WriteLine("Node {0} has no view to process... skipping", child.FigmaNode);
+                    continue;
+                }
+
                 if (child.FigmaNode is IAbsoluteBoundingBox absoluteBounding && parentNode.FigmaNode is IAbsoluteBoundingBox parentAbsoluteBoundingBox)
                 {
                     parentNode.View.AddChild(child.View);
 
-                    var x = Math.Max(absoluteBounding.absoluteBoundingBox.x - parentAbsoluteBoundingBox.absoluteBoundingBox.x, 0);
+                    var x = Math.Max(absoluteBounding.absoluteBoundingBox.X - parentAbsoluteBoundingBox.absoluteBoundingBox.X, 0);
                     float y;
                     if (AppContext.Current.IsVerticalAxisFlipped)
                     {
-                        var parentY = parentAbsoluteBoundingBox.absoluteBoundingBox.y + parentAbsoluteBoundingBox.absoluteBoundingBox.height;
-                        var actualY = absoluteBounding.absoluteBoundingBox.y + absoluteBounding.absoluteBoundingBox.height;
+                        var parentY = parentAbsoluteBoundingBox.absoluteBoundingBox.Y + parentAbsoluteBoundingBox.absoluteBoundingBox.Height;
+                        var actualY = absoluteBounding.absoluteBoundingBox.Y + absoluteBounding.absoluteBoundingBox.Height;
                         y = parentY - actualY;
                     }
                     else
                     {
-                        y = absoluteBounding.absoluteBoundingBox.y - parentAbsoluteBoundingBox.absoluteBoundingBox.y;
+                        y = absoluteBounding.absoluteBoundingBox.Y - parentAbsoluteBoundingBox.absoluteBoundingBox.Y;
                     }
 
-                    child.View.SetAllocation(x, y, Math.Max(absoluteBounding.absoluteBoundingBox.width, 1), Math.Max(1, absoluteBounding.absoluteBoundingBox.height));
-                }
+					child.View.SetAllocation(x, y,
+						Math.Max(absoluteBounding.absoluteBoundingBox.Width, 1),
+						Math.Max(1, absoluteBounding.absoluteBoundingBox.Height)
+						);
 
-                Recursively(child);
+					//we need to ensure current view is in height
+					//var instrinsic = child.View.IntrinsicContentSize;
+
+					//child.View.SetAllocation(x, y,
+					//	Math.Max (instrinsic.Width, Math.Max(absoluteBounding.absoluteBoundingBox.Width, 1)),
+					//	Math.Max (instrinsic.Height, Math.Max(1, absoluteBounding.absoluteBoundingBox.Height))
+					//	);
+				}
+
+				Recursively(child);
             }
         }
 
-        public void Start(string figmaName, IViewWrapper container, FigmaViewRendererServiceOptions options)
+        public void Start(string figmaName, IView container, FigmaViewRendererServiceOptions options)
         {
             Console.WriteLine("[FigmaViewRenderer] Starting process..");
             Console.WriteLine($"Reading {figmaName} from resources..");

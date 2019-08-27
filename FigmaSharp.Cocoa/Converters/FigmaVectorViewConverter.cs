@@ -30,20 +30,24 @@ using AppKit;
 
 using FigmaSharp.Converters;
 using FigmaSharp.Models;
+using FigmaSharp.Services;
+using LiteForms;
+using LiteForms.Cocoa;
+using LiteForms.Graphics.Mac;
 
 namespace FigmaSharp.Cocoa.Converters
 {
     public class FigmaVectorViewConverter : FigmaVectorViewConverterBase
     {
-        public override IViewWrapper ConvertTo(FigmaNode currentNode, ProcessedNode parent)
+        public override IView ConvertTo(FigmaNode currentNode, ProcessedNode parent, FigmaRendererService rendererService)
         {
-            var vector = ((FigmaVector)currentNode);
-            var currengroupView = new NSImageView();
-            currengroupView.Configure((FigmaRectangleVector)currentNode);
-            return new ImageViewWrapper(currengroupView);
+			var vector = new ImageView();
+			var currengroupView = (NSImageView)vector.NativeObject;
+            currengroupView.Configure((FigmaVector)currentNode);
+            return vector;
         }
 
-        public override string ConvertToCode(FigmaNode currentNode)
+        public override string ConvertToCode(FigmaNode currentNode, FigmaCodeRendererService rendererService)
         {
             return string.Empty;
         }
